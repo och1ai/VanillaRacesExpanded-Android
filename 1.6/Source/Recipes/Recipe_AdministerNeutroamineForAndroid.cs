@@ -8,9 +8,15 @@ namespace VREAndroids
 {
     public class Recipe_AdministerNeutroamineForAndroid : Recipe_AdministerIngestible
     {
+        // Neutroamine needed to refill a full reservoir (1.0 severity of neutroloss). Neutroamine
+        // blood is the cheap option: 25 instead of the old 100.
+        public const float NeutroaminePerFullReservoir = 25f;
+
         public override bool AvailableOnNow(Thing thing, BodyPartRecord part = null)
         {
-            if (thing is Pawn pawn && pawn.IsAndroid() is false)
+            // Only neutroamine-blood androids are refuelled with neutroamine. Normal-blood
+            // androids top up with hemogen instead, and bloodless ones have no reservoir.
+            if (thing is Pawn pawn && pawn.HasActiveGene(VREA_DefOf.VREA_NeutroCirculation) is false)
             {
                 return false;
             }
@@ -29,7 +35,7 @@ namespace VREAndroids
             {
                 return base.GetIngredientCount(ing, bill);
             }
-            return Mathf.Min(bill.Map.listerThings.ThingsOfDef(VREA_DefOf.Neutroamine).Sum((Thing x) => x.stackCount), firstHediffOfDef.Severity / 0.01f);
+            return Mathf.Min(bill.Map.listerThings.ThingsOfDef(VREA_DefOf.Neutroamine).Sum((Thing x) => x.stackCount), firstHediffOfDef.Severity * NeutroaminePerFullReservoir);
         }
 
         public override void ApplyOnPawn(Pawn pawn, BodyPartRecord part, Pawn billDoer, List<Thing> ingredients, Bill bill)
@@ -38,7 +44,7 @@ namespace VREAndroids
             var neutroloss = pawn.health.hediffSet.GetFirstHediffOfDef(VREA_DefOf.VREA_NeutroLoss);
             if (neutroloss != null)
             {
-                neutroloss.Severity -= neutroamine / 100f;
+                neutroloss.Severity -= neutroamine / NeutroaminePerFullReservoir;
                 if (neutroloss.Severity <= 0.01f)
                 {
                     neutroloss.Severity = 0;

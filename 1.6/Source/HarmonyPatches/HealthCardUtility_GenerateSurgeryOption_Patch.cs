@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using RimWorld;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Verse;
 
@@ -39,7 +40,12 @@ namespace VREAndroids
         {
             if (curPawn.IsAndroid())
             {
-                var counterPart = bodyPartRecord.def.GetAndroidCounterPart();
+                // Prefer the android organ actually installed on this part (e.g. a bloodless
+                // android's heatsink), so the label matches reality instead of always showing the
+                // generic neutroamine counterpart. Fall back to the blood-aware counterpart.
+                var installed = curPawn.health.hediffSet.hediffs
+                    .FirstOrDefault(h => h.Part == bodyPartRecord && h is Hediff_AndroidPart);
+                var counterPart = installed?.def ?? Utils.GetAndroidCounterPartFor(bodyPartRecord.def, curPawn);
                 if (counterPart != null)
                 {
                     return bodyPartRecord.AndroidPartLabel(counterPart);

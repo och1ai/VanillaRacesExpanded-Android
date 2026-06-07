@@ -172,6 +172,59 @@
 		<uiIconThing>VREA_Neutrofilter</uiIconThing>
 	</RecipeDef>
 
+	<!-- Hemogenic-blood circulatory organs. Installed automatically based on the android's
+	     blood type (see BloodOrgansExtension), so they need no item or surgery recipe. -->
+	<HediffDef ParentName="VREA_AndroidBodyPartBase">
+		<defName>VREA_HemoPump</defName>
+		<label>hemopump</label>
+		<labelNoun>a hemopump</labelNoun>
+		<description>A synthetic pump that circulates the android's red synthetic blood across all subsystems.</description>
+		<addedPartProps>
+			<solid>true</solid>
+		</addedPartProps>
+	</HediffDef>
+
+	<HediffDef ParentName="VREA_AndroidBodyPartBase">
+		<defName>VREA_HemoFilter</defName>
+		<label>hemofilter</label>
+		<labelNoun>a hemofilter</labelNoun>
+		<description>A synthetic filter that cleans and recycles the android's red synthetic blood.</description>
+		<addedPartProps>
+			<solid>true</solid>
+		</addedPartProps>
+	</HediffDef>
+
+	<!-- Bloodless solid-state internals (no circulating fluid at all). -->
+	<HediffDef ParentName="VREA_AndroidBodyPartBase">
+		<defName>VREA_DataBus</defName>
+		<label>data bus</label>
+		<labelNoun>a data bus</labelNoun>
+		<description>A solid-state data and power bus that routes signals and current through the frame. With no fluid to move, it takes the place of a pump.</description>
+		<addedPartProps>
+			<solid>true</solid>
+		</addedPartProps>
+	</HediffDef>
+
+	<HediffDef ParentName="VREA_AndroidBodyPartBase">
+		<defName>VREA_Heatsink</defName>
+		<label>heatsink</label>
+		<labelNoun>a heatsink</labelNoun>
+		<description>A passive, mechanite-laced heatsink that dissipates waste heat directly, with no fluid to filter or recycle.</description>
+		<addedPartProps>
+			<solid>true</solid>
+		</addedPartProps>
+	</HediffDef>
+
+	<HediffDef ParentName="VREA_AndroidBodyPartBase">
+		<defName>VREA_FluidReprocessor</defName>
+		<label>fluid reprocessor</label>
+		<labelNoun>a fluid reprocessor</labelNoun>
+		<description>A compact reprocessor that recovers and recycles the small amounts of residual lubricants and working fluids within an otherwise dry frame.</description>
+		<addedPartProps>
+			<solid>true</solid>
+		</addedPartProps>
+	</HediffDef>
+
 	<HediffDef ParentName="VREA_AndroidBodyPartBase">
 		<defName>VREA_MetabolismRegulator</defName>
 		<label>metabolism regulator</label>
@@ -300,6 +353,10 @@
 
 	<RecipeDef ParentName="VREA_SurgeryInstallBodyPartAndroidBase">
 		<defName>VREA_InstallReactor</defName>
+		<!-- Use the reactor-specific worker so the install stays available (android part
+		     installs are otherwise disabled) and the installed reactor inherits the item's
+		     stored energy. -->
+		<workerClass>VREAndroids.Recipe_InstallReactor</workerClass>
 		<label>install reactor</label>
 		<description>Install a reactor.</description>
 		<descriptionHyperlinks>

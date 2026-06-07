@@ -30,6 +30,11 @@ namespace VREAndroids
         public List<ThingDefCount> requiredItems;
 
         public bool disableAndroidHardwareLimitation;
+
+        // Blood hardware is mutually exclusive and can only be swapped while the body is being
+        // built (creation), not at the behaviorist/modification station.
+        protected virtual bool CanSwapBlood => false;
+
         public Window_CreateAndroidBase(Action callback)
         {
             this.callback = callback;
@@ -42,7 +47,11 @@ namespace VREAndroids
             {
                 collapsedCategories.Add(allDef, value: false);
             }
-            selectedGenes = Utils.AndroidGenesGenesInOrder.Where(x => x.CanBeRemovedFromAndroid() is false).ToList();
+            // Auto-select the immutable core hardware, but pick exactly one blood type
+            // (neutroamine by default) rather than all of them.
+            selectedGenes = Utils.AndroidGenesGenesInOrder
+                .Where(x => x.CanBeRemovedFromAndroid() is false && x.IsBloodGene() is false).ToList();
+            selectedGenes.Add(VREA_DefOf.VREA_NeutroCirculation);
             OnGenesChanged();
         }
 
@@ -390,6 +399,23 @@ namespace VREAndroids
                     flag = true;
                     if (DrawGene(geneDef, !adding, ref curX, curY, num2, containingRect, flag3))
                     {
+                        if (geneDef.IsBloodGene() && CanSwapBlood)
+                        {
+                            // Blood is mutually exclusive: switching to another type replaces the
+                            // current one. Clicking the active type does nothing (one is required).
+                            if (!selectedGenes.Contains(geneDef))
+                            {
+                                SoundDefOf.Tick_High.PlayOneShotOnCamera();
+                                selectedGenes.RemoveAll(g => g.IsBloodGene());
+                                selectedGenes.Add(geneDef);
+                                if (!xenotypeNameLocked)
+                                {
+                                    xenotypeName = GetAndroidTypeName();
+                                }
+                                OnGenesChanged();
+                            }
+                            break;
+                        }
                         if (selectedGenes.Contains(geneDef))
                         {
                             if (geneDef.CanBeRemovedFromAndroid() || disableAndroidHardwareLimitation && geneDef.CanBeRemovedFromAndroidAwakened())

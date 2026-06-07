@@ -28,7 +28,7 @@ namespace VREAndroids
                 if (neutroloss != null)
                 {
                     pawn.carryTracker.CarriedThing.Destroy();
-                    neutroloss.Severity -= job.count / 100f;
+                    neutroloss.Severity -= job.count / Recipe_AdministerNeutroamineForAndroid.NeutroaminePerFullReservoir;
                     if (neutroloss.Severity <= 0.01f)
                     {
                         neutroloss.Severity = 0;

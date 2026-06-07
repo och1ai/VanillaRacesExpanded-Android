@@ -38,7 +38,7 @@ namespace VREAndroids
                     return new FloatMenuOption("VREA.RefuelWithNeutroamine".Translate(), delegate
                     {
                         var job = JobMaker.MakeJob(VREA_DefOf.VREA_RefuelWithNeutroamine, clickedThing);
-                        var amount = Mathf.CeilToInt(neutroloss.Severity * 100f);
+                        var amount = Mathf.CeilToInt(neutroloss.Severity * Recipe_AdministerNeutroamineForAndroid.NeutroaminePerFullReservoir);
                         amount = Mathf.Min(clickedThing.stackCount, amount);
                         job.count = amount;
                         context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job);

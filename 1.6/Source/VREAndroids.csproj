@@ -99,6 +99,10 @@
     <Compile Include="AI\WorkGiver_RepairAndroid.cs" />
     <Compile Include="Buildings\Building_AndroidSleepMode.cs" />
     <Compile Include="FloatMenuOptionProviders\FloatMenuOptionProvider_RefuelWithNeutroamine.cs" />
+    <Compile Include="FloatMenuOptionProviders\FloatMenuOptionProvider_RepairAndroid.cs" />
+    <Compile Include="Genes\Gene_AndroidBlood.cs" />
+    <Compile Include="BloodOrgansExtension.cs" />
+    <Compile Include="GameComponent_AndroidBloodOrgans.cs" />
     <Compile Include="Genes\Gene_NeutroSynthesis.cs" />
     <Compile Include="Genes\Gene_SelfDestructProtocols.cs" />
     <Compile Include="HarmonyPatches\Anomaly\CompRevenant_Hypnotize_Patch.cs" />
@@ -155,6 +159,7 @@
     <Compile Include="HarmonyPatches\DaysWorthOfFoodCalculator_AnyFoodEatingPawn_Patch.cs" />
     <Compile Include="HarmonyPatches\DaysWorthOfFoodCalculator_ApproxDaysWorthOfFood_Patch.cs" />
     <Compile Include="HarmonyPatches\FeedPatientUtility_ShouldBeFed_Patch.cs" />
+    <Compile Include="HarmonyPatches\FloatMenuOptionProvider_DraftedTend_IsValidTendTarget_Patch.cs" />
     <Compile Include="HarmonyPatches\FoodUtility_WillEat_ThingDef_Patch.cs" />
     <Compile Include="HarmonyPatches\HealthCardUtility_DrawPawnHealthCard_Patch.cs" />
     <Compile Include="HarmonyPatches\JobDriver_LayDown_GetReport_Patch.cs" />
@@ -321,6 +326,8 @@
     <Compile Include="HarmonyPatches\HealthCardUtility_GenerateSurgeryOption_Patch.cs" />
     <Compile Include="HarmonyPatches\HealthUtility_TryAnesthetize_Patch.cs" />
     <Compile Include="HarmonyPatches\HediffGiver_Bleeding_OnIntervalPassed_Patch.cs" />
+    <Compile Include="HarmonyPatches\HediffSet_CalculateBleedRate_Patch.cs" />
+    <Compile Include="HarmonyPatches\Pawn_HealthTracker_CanBleed_Patch.cs" />
     <Compile Include="HarmonyPatches\HediffGiver_Heat_OnIntervalPassed_Patch.cs" />
     <Compile Include="HarmonyPatches\HediffGiver_Hypothermia_OnIntervalPassed_Patch.cs" />
     <Compile Include="HarmonyPatches\HediffSet_CacheMissingPartsCommonAncestors_Patch.cs" />

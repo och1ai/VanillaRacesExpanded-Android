@@ -166,16 +166,25 @@
 		<sterilize>true</sterilize>
 	</VREAndroids.AndroidGeneDef>
 
+	<!-- ===================== Blood hardware (mutually exclusive) ===================== -->
+
+	<!-- Optional upgrade: thick neutroamine instead of normal blood. Best efficiency and the
+	     cheapest top-up (neutroamine), but bleeds blue neutroamine when wounded. -->
 	<VREAndroids.AndroidGeneDef>
 		<defName>VREA_NeutroCirculation</defName>
-		<label>neutro circulation</label>
-		<description>Androids operate thanks to thick neutroamine in their synthetic veins. Due to open, bleeding wounds, neutro loss might occur, greatly affecting the capabilities of an android. They are generally unable to regenerate their neutroamine levels, which means that severe neutroloss needs to be treated in a special casket designed to refill an android with neutroamine.</description>
+		<label>neutroamine blood</label>
+		<geneClass>VREAndroids.Gene_AndroidBlood</geneClass>
+		<description>An optional upgrade that replaces the android's blood with thick neutroamine running through its synthetic veins. It is the most power-efficient circulatory option and its reservoir can be topped up cheaply with neutroamine, but open wounds bleed precious blue neutroamine.</description>
 		<iconPath>UI/Icons/Genes/Hardware/Gene_NeutroCirculation</iconPath>
 		<displayOrderInCategory>11</displayOrderInCategory>
-		<biostatCpx>1</biostatCpx>
+		<biostatCpx>2</biostatCpx>
+		<biostatMet>7</biostatMet>
 		<displayCategory>VREA_Hardware</displayCategory>
 		<canGenerateInGeneSet>false</canGenerateInGeneSet>
 		<isCoreComponent>true</isCoreComponent>
+		<exclusionTags>
+			<li>AndroidBlood</li>
+		</exclusionTags>
 		<modExtensions Inherit="False">
 			<li Class="VEF.Genes.GeneExtension">
 				<backgroundPathXenogenes>UI/Icons/Genes/GeneBackground_Hardware</backgroundPathXenogenes>
@@ -185,6 +194,74 @@
 				<customBloodIcon>UI/Icons/NeutrolossIcon</customBloodIcon>
 				<customBloodEffect>VREA_Damage_HitAndroid</customBloodEffect>
 				<customWoundsFromFleshtype>VREA_AndroidFlesh</customWoundsFromFleshtype>
+			</li>
+			<li Class="VREAndroids.BloodOrgansExtension">
+				<organs>
+					<li><part>Heart</part><hediff>VREA_NeuroPump</hediff></li>
+					<li><part>Kidney</part><hediff>VREA_Neutrofilter</hediff></li>
+				</organs>
+			</li>
+		</modExtensions>
+	</VREAndroids.AndroidGeneDef>
+
+	<!-- Default circulatory option: a synthetic substitute that behaves like ordinary blood -
+	     bleeds red, regenerates on its own, and is topped up with hemogen packs. -->
+	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
+		<defName>VREA_NormalBlood</defName>
+		<label>hemogenic</label>
+		<geneClass>VREAndroids.Gene_AndroidBlood</geneClass>
+		<description>The standard android circulatory system, running a synthetic blood substitute that behaves just like ordinary blood. Open wounds bleed red and the lost fluid regenerates over time on its own; a depleted reservoir can be topped up with hemogen packs, and blood can be transfused or extracted as normal.</description>
+		<iconPath>UI/Icons/Genes/Hardware/Gene_HemogenicBlood</iconPath>
+		<displayOrderInCategory>11</displayOrderInCategory>
+		<biostatCpx>1</biostatCpx>
+		<biostatMet>3</biostatMet>
+		<exclusionTags>
+			<li>AndroidBlood</li>
+		</exclusionTags>
+		<modExtensions>
+			<li Class="VREAndroids.BloodOrgansExtension">
+				<organs>
+					<li><part>Heart</part><hediff>VREA_HemoPump</hediff></li>
+					<li><part>Kidney</part><hediff>VREA_HemoFilter</hediff></li>
+				</organs>
+			</li>
+		</modExtensions>
+	</VREAndroids.AndroidGeneDef>
+
+	<!-- Optional dry frame: no circulating fluid at all. Never bleeds and wounds show bare
+	     metal, but gains no circulatory efficiency and cannot be topped up. -->
+	<VREAndroids.AndroidGeneDef>
+		<defName>VREA_Bloodless</defName>
+		<label>bloodless</label>
+		<geneClass>VREAndroids.Gene_AndroidBlood</geneClass>
+		<description>This android runs completely dry, with no circulating fluid whatsoever. It never bleeds and its wounds reveal bare metal, but it gains no efficiency from a circulatory system and has no reservoir to refill.</description>
+		<iconPath>UI/Icons/Genes/Hardware/Gene_Bloodless</iconPath>
+		<displayOrderInCategory>11</displayOrderInCategory>
+		<biostatCpx>1</biostatCpx>
+		<biostatMet>0</biostatMet>
+		<displayCategory>VREA_Hardware</displayCategory>
+		<canGenerateInGeneSet>false</canGenerateInGeneSet>
+		<isCoreComponent>true</isCoreComponent>
+		<exclusionTags>
+			<li>AndroidBlood</li>
+		</exclusionTags>
+		<modExtensions Inherit="False">
+			<li Class="VEF.Genes.GeneExtension">
+				<backgroundPathXenogenes>UI/Icons/Genes/GeneBackground_Hardware</backgroundPathXenogenes>
+				<backgroundPathEndogenes>UI/Icons/Genes/GeneBackground_Hardware</backgroundPathEndogenes>
+				<!-- Bloodless androids take hits like a mechanoid: grey metal wounds, spark
+				     impact effect and scattered machine bits instead of any blood. -->
+				<customBloodThingDef>Filth_MachineBits</customBloodThingDef>
+				<customBloodSmearThingDef>Filth_MachineBits</customBloodSmearThingDef>
+				<customBloodEffect>Damage_HitMechanoid</customBloodEffect>
+				<customWoundsFromFleshtype>Mechanoid</customWoundsFromFleshtype>
+			</li>
+			<li Class="VREAndroids.BloodOrgansExtension">
+				<organs>
+					<li><part>Heart</part><hediff>VREA_DataBus</hediff></li>
+					<li><part>Kidney</part><hediff>VREA_FluidReprocessor</hediff></li>
+					<li><part>Kidney</part><hediff>VREA_Heatsink</hediff></li>
+				</organs>
 			</li>
 		</modExtensions>
 	</VREAndroids.AndroidGeneDef>

@@ -9,6 +9,11 @@ namespace VREAndroids
         [HarmonyPriority(int.MaxValue)]
         public static bool Prefix(Pawn pawn, Hediff cause)
         {
+            // Bloodless androids never bleed and never accrue any blood/neutro loss.
+            if (pawn.HasActiveGene(VREA_DefOf.VREA_Bloodless))
+            {
+                return false;
+            }
             if (pawn.HasActiveGene(VREA_DefOf.VREA_NeutroCirculation))
             {
                 HediffSet hediffSet = pawn.health.hediffSet;

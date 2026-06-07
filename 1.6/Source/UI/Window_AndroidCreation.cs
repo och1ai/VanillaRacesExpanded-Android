@@ -21,6 +21,9 @@ namespace VREAndroids
 
         public override string Header => "VREA.CreateAndroid".Translate();
         public override string AcceptButtonLabel => "VREA.CreateAndroid".Translate();
+
+        // Blood type can be chosen freely while building the body.
+        protected override bool CanSwapBlood => true;
         protected override void AcceptInner()
         {
             CustomXenotype customXenotype = new CustomXenotype();
@@ -67,7 +70,8 @@ namespace VREAndroids
                     xenotypeName = xenotype.name;
                     xenotypeNameLocked = true;
                     selectedGenes.Clear();
-                    selectedGenes = Utils.AndroidGenesGenesInOrder.Where(x => x.CanBeRemovedFromAndroid() is false).ToList();
+                    selectedGenes = Utils.AndroidGenesGenesInOrder
+                        .Where(x => x.CanBeRemovedFromAndroid() is false && x.IsBloodGene() is false).ToList();
                     selectedGenes.AddRange(xenotype.genes);
                     selectedGenes = selectedGenes.Distinct().ToList();
                     iconDef = xenotype.IconDef;

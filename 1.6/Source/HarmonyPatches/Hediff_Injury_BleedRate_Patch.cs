@@ -9,29 +9,15 @@ namespace VREAndroids
         [HarmonyPriority(int.MaxValue)]
         public static bool Prefix(ref float __result, Hediff_Injury __instance)
         {
-            if (__instance.pawn.HasActiveGene(VREA_DefOf.VREA_NeutroCirculation))
+            // Bloodless androids have no circulating fluid, so their wounds never bleed.
+            // Normal-blood and neutroamine-blood androids bleed via the vanilla logic (red
+            // blood, or blue neutroamine filth supplied by the gene's custom-blood extension).
+            if (__instance.pawn.HasActiveGene(VREA_DefOf.VREA_Bloodless))
             {
-                __result = BleedRate(__instance);
+                __result = 0f;
                 return false;
             }
             return true;
-        }
-        public static float BleedRate(Hediff_Injury __instance)
-        {
-            if (__instance.pawn.Dead)
-            {
-                return 0f;
-            }
-            if (__instance.IsTended() || __instance.IsPermanent())
-            {
-                return 0f;
-            }
-            float num = __instance.Severity * __instance.def.injuryProps.bleedRate;
-            if (__instance.Part != null)
-            {
-                num *= __instance.Part.def.bleedRate;
-            }
-            return num;
         }
     }
 }

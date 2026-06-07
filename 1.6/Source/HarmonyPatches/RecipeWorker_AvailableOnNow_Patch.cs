@@ -33,6 +33,14 @@ namespace VREAndroids
 
         public static bool RecipeIsAvailableOnAndroid(RecipeWorker recipeWorker, Pawn pawn)
         {
+            // Hemogenic androids carry ordinary red blood, so they support the vanilla blood
+            // transfusion and hemogen extraction recipes just like a normal pawn.
+            string recipeDefName = recipeWorker.recipe.defName;
+            if ((recipeDefName == "BloodTransfusion" || recipeDefName == "ExtractHemogenPack")
+                && pawn.HasActiveGene(VREA_DefOf.VREA_NormalBlood))
+            {
+                return true;
+            }
             if (recipeWorker is Recipe_AdministerIngestible && recipeWorker is not Recipe_AdministerNeutroamineForAndroid)
             {
                 return false;

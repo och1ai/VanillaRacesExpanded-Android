@@ -15,8 +15,15 @@ namespace VREAndroids
             base.PostAdd();
             foreach (var bodyPart in this.pawn.def.race.body.AllParts.OrderByDescending(x => x.Index))
             {
+                // Circulatory organs (heart/kidney) depend on the blood type and are installed by
+                // Gene_AndroidBlood, so skip them here.
+                if (Utils.IsBloodOrganPart(bodyPart.def))
+                {
+                    continue;
+                }
                 var hediffDef = bodyPart.def.GetAndroidCounterPart();
-                if (hediffDef != null && this.pawn.health.hediffSet.GetNotMissingParts().Contains(bodyPart))
+                if (hediffDef != null && this.pawn.health.hediffSet.GetNotMissingParts().Contains(bodyPart)
+                    && this.pawn.health.hediffSet.hediffs.Any(h => h.Part == bodyPart && h is Hediff_AddedPart) is false)
                 {
                     var hediff = HediffMaker.MakeHediff(hediffDef, pawn, bodyPart);
                     try

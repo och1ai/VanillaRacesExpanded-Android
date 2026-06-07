@@ -112,6 +112,164 @@ namespace VREAndroids
             return geneDef.displayCategory == VREA_DefOf.VREA_Subroutine;
         }
 
+        // Shared exclusion tag for the mutually-exclusive blood hardware (neutroamine / hemogenic
+        // / bloodless). Exactly one is chosen when the body is built.
+        public const string BloodExclusionTag = "AndroidBlood";
+
+        public static bool IsBloodGene(this GeneDef geneDef)
+        {
+            return geneDef.exclusionTags != null && geneDef.exclusionTags.Contains(BloodExclusionTag);
+        }
+
+        public static Gene ActiveBloodGene(this Pawn pawn)
+        {
+            if (pawn?.genes == null)
+            {
+                return null;
+            }
+            foreach (var gene in pawn.genes.GenesListForReading)
+            {
+                if (gene.Active && gene.def.IsBloodGene())
+                {
+                    return gene;
+                }
+            }
+            return null;
+        }
+
+        private static HashSet<BodyPartDef> cachedBloodOrganParts;
+        // Body parts whose synthetic organ depends on the android's blood type (heart, kidney).
+        public static bool IsBloodOrganPart(BodyPartDef part)
+        {
+            if (cachedBloodOrganParts == null)
+            {
+                cachedBloodOrganParts = new HashSet<BodyPartDef>();
+                foreach (var geneDef in allAndroidGenes)
+                {
+                    var ext = geneDef.GetModExtension<BloodOrgansExtension>();
+                    if (ext != null)
+                    {
+                        foreach (var organ in ext.organs)
+                        {
+                            if (organ.part != null)
+                            {
+                                cachedBloodOrganParts.Add(organ.part);
+                            }
+                        }
+                    }
+                }
+            }
+            return cachedBloodOrganParts.Contains(part);
+        }
+
+        // Blood-aware counterpart: circulatory organs depend on the active blood gene (null when
+        // that blood type has none, e.g. bloodless); everything else uses the generic counterpart.
+        public static HediffDef GetAndroidCounterPartFor(BodyPartDef part, Pawn pawn)
+        {
+            if (IsBloodOrganPart(part))
+            {
+                return pawn.ActiveBloodGene()?.def.GetModExtension<BloodOrgansExtension>()?.GetOrgan(part);
+            }
+            return part.GetAndroidCounterPart();
+        }
+
+        private static HashSet<HediffDef> cachedBloodOrganHediffs;
+        public static bool IsBloodOrganHediff(HediffDef def)
+        {
+            if (cachedBloodOrganHediffs == null)
+            {
+                cachedBloodOrganHediffs = new HashSet<HediffDef>();
+                foreach (var geneDef in allAndroidGenes)
+                {
+                    var ext = geneDef.GetModExtension<BloodOrgansExtension>();
+                    if (ext != null)
+                    {
+                        foreach (var organ in ext.organs)
+                        {
+                            if (organ.hediff != null)
+                            {
+                                cachedBloodOrganHediffs.Add(organ.hediff);
+                            }
+                        }
+                    }
+                }
+            }
+            return cachedBloodOrganHediffs.Contains(def);
+        }
+
+        // Reconciles an android's circulatory organs with its active blood type: removes organs
+        // that don't match and installs the correct ones (none for parts the blood type omits).
+        // A part listed once applies to all its records (e.g. both kidneys get a neutrofilter);
+        // listed multiple times, the organs map to successive records (e.g. one kidney gets a
+        // fluid reprocessor, the other a heatsink). Manual implants are never overwritten.
+        public static void SyncBloodOrgans(Pawn pawn, GeneDef bloodGeneOverride = null)
+        {
+            if (pawn?.health == null)
+            {
+                return;
+            }
+            // bloodGeneOverride is used when called from a gene's PostAdd, where the gene may not
+            // be flagged Active yet and ActiveBloodGene() would miss it.
+            var bloodGeneDef = bloodGeneOverride ?? pawn.ActiveBloodGene()?.def;
+            var ext = bloodGeneDef?.GetModExtension<BloodOrgansExtension>();
+            if (cachedBloodOrganParts == null)
+            {
+                IsBloodOrganPart(null);
+            }
+            var allowed = new HashSet<HediffDef>();
+            if (ext != null)
+            {
+                foreach (var organ in ext.organs)
+                {
+                    if (organ.hediff != null)
+                    {
+                        allowed.Add(organ.hediff);
+                    }
+                }
+            }
+            // 1) Strip any circulatory organ that doesn't belong to this blood type (by hediff, so
+            //    it works regardless of body-part-record matching).
+            var toRemove = pawn.health.hediffSet.hediffs
+                .Where(h => h is Hediff_AndroidPart && IsBloodOrganHediff(h.def) && allowed.Contains(h.def) is false)
+                .ToList();
+            foreach (var stale in toRemove)
+            {
+                pawn.health.RemoveHediff(stale);
+            }
+            // 2) Install the correct organs on each circulatory part record.
+            foreach (var partDef in cachedBloodOrganParts)
+            {
+                var desired = new List<HediffDef>();
+                if (ext != null)
+                {
+                    foreach (var organ in ext.organs)
+                    {
+                        if (organ.part == partDef && organ.hediff != null)
+                        {
+                            desired.Add(organ.hediff);
+                        }
+                    }
+                }
+                var records = pawn.health.hediffSet.GetNotMissingParts().Where(p => p.def == partDef).ToList();
+                for (int i = 0; i < records.Count; i++)
+                {
+                    var record = records[i];
+                    HediffDef want = desired.Count == 0 ? null
+                        : (desired.Count == 1 ? desired[0] : (i < desired.Count ? desired[i] : null));
+                    if (want == null)
+                    {
+                        continue;
+                    }
+                    bool alreadyHasAddedPart = pawn.health.hediffSet.hediffs
+                        .Any(h => h.Part == record && h is Hediff_AddedPart);
+                    if (alreadyHasAddedPart is false)
+                    {
+                        pawn.health.AddHediff(want, record);
+                    }
+                }
+            }
+        }
+
         public static bool IsNonAwakenedAndroidType(this XenotypeDef def)
         {
             return def.genes.Any(x => x == VREA_DefOf.VREA_PsychologyDisabled);

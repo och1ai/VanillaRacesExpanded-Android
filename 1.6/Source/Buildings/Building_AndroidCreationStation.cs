@@ -76,9 +76,6 @@ namespace VREAndroids
 
             android.ageTracker.AgeBiologicalTicks = 0;
             android.ageTracker.AgeChronologicalTicks = 0;
-            var neutroloss = HediffMaker.MakeHediff(VREA_DefOf.VREA_NeutroLoss, android);
-            neutroloss.Severity = 1;
-            android.health.AddHediff(neutroloss);
             android.genes.xenotypeName = curAndroidProject.name;
             android.genes.iconDef = curAndroidProject.IconDef;
             foreach (var gene in Utils.allAndroidGenes)
@@ -93,6 +90,17 @@ namespace VREAndroids
             foreach (GeneDef gene in curAndroidProject.genes.OrderByDescending(x => x.CanBeRemovedFromAndroid() is false).ToList())
             {
                 android.genes.AddGene(gene, true);
+            }
+            // The body was generated as the default blood type, so make its circulatory organs
+            // match the blood type actually chosen for this android.
+            Utils.SyncBloodOrgans(android);
+            // Only neutroamine-blood androids start needing a neutroamine top-up; normal-blood
+            // and bloodless androids do not use the neutroloss reservoir.
+            if (android.HasActiveGene(VREA_DefOf.VREA_NeutroCirculation))
+            {
+                var neutroloss = HediffMaker.MakeHediff(VREA_DefOf.VREA_NeutroLoss, android);
+                neutroloss.Severity = 1;
+                android.health.AddHediff(neutroloss);
             }
             curAndroidProject = null;
             GenSpawn.Spawn(android, Position, Map);

@@ -49,6 +49,11 @@ namespace VREAndroids
 
         public override bool GeneValidator(GeneDef x)
         {
+            // Blood type is fixed once the body is built; it cannot be swapped at this station.
+            if (x.IsBloodGene())
+            {
+                return false;
+            }
             if (android.IsAwakened())
             {
                 if (x is AndroidGeneDef geneDef && geneDef.removeWhenAwakened)
@@ -86,8 +91,14 @@ namespace VREAndroids
                     xenotypeName = xenotype.name;
                     xenotypeNameLocked = true;
                     selectedGenes.Clear();
-                    selectedGenes = Utils.AndroidGenesGenesInOrder.Where(x => x.CanBeRemovedFromAndroid() is false).ToList();
-                    selectedGenes.AddRange(xenotype.genes);
+                    var currentBlood = android.genes.GenesListForReading.Select(g => g.def).FirstOrDefault(d => d.IsBloodGene());
+                    selectedGenes = Utils.AndroidGenesGenesInOrder
+                        .Where(x => x.CanBeRemovedFromAndroid() is false && x.IsBloodGene() is false).ToList();
+                    if (currentBlood != null)
+                    {
+                        selectedGenes.Add(currentBlood);
+                    }
+                    selectedGenes.AddRange(xenotype.genes.Where(g => g.IsBloodGene() is false));
                     selectedGenes = selectedGenes.Distinct().ToList();
                     iconDef = xenotype.IconDef;
                     OnGenesChanged();

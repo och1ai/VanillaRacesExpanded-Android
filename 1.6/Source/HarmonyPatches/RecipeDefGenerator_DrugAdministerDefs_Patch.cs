@@ -32,7 +32,7 @@ namespace VREAndroids
             recipeDef.ingredients.Add(ingredientCount);
             recipeDef.fixedIngredientFilter.SetAllow(item, allow: true);
             recipeDef.recipeUsers = new List<ThingDef>();
-            foreach (ThingDef item2 in DefDatabase<ThingDef>.AllDefs.Where((ThingDef d) => d.category == ThingCategory.Pawn 
+            foreach (ThingDef item2 in DefDatabase<ThingDef>.AllDefs.Where((ThingDef d) => d.category == ThingCategory.Pawn
             && d.race.Humanlike))
             {
                 recipeDef.recipeUsers.Add(item2);
