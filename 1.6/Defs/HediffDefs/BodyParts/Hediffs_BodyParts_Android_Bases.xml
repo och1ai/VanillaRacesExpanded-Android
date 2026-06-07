@@ -44,9 +44,8 @@
         <Crafting>8</Crafting>
       </skillRequirements>
       <researchPrerequisite>VREA_AndroidTech</researchPrerequisite>
-      <recipeUsers>
-        <li>VREA_AndroidPartWorkbench</li>
-      </recipeUsers>
+      <!-- Android part items are legacy: no recipeUsers means they can no longer be crafted.
+           They regenerate through android repair instead (see JobDriver_RepairAndroid). -->
     </recipeMaker>
   </ThingDef>
   

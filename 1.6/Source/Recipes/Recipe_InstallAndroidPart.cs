@@ -9,19 +9,17 @@ namespace VREAndroids
     {
         public override bool AvailableOnNow(Thing thing, BodyPartRecord part = null)
         {
+            // Android body-part items are now legacy: their install surgeries are disabled
+            // so they no longer override manually installed implants (bionics, power claws,
+            // etc.). The reactor is the sole exception and keeps its install recipe.
+            if (this is not Recipe_InstallReactor)
+            {
+                return false;
+            }
             var pawn = thing as Pawn;
             if (pawn is null || pawn.IsAndroid() is false)
             {
                 return false;
-            }
-            if (this is not Recipe_InstallReactor)
-            {
-                var existingHediffs = pawn.health.hediffSet.hediffs.Where(x => x.part == part && x.def == recipe.addsHediff).ToList();
-                if (existingHediffs.Any() && (part is null
-                    || pawn.health.hediffSet.hediffs.OfType<Hediff_Injury>().Any(x => x.part == part) is false))
-                {
-                    return false;
-                }
             }
             return base.AvailableOnNow(thing, part);
         }
