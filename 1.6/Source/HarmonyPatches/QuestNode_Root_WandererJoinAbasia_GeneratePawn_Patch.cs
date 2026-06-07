@@ -13,8 +13,8 @@ namespace VREAndroids
     {
         public static MethodBase TargetMethod()
         {
-            return typeof(QuestNode_Root_WandererJoinAbasia).DeclaredMethod(nameof(QuestNode_Root_WandererJoinAbasia.GeneratePawn_NewTemp))
-                   ?? typeof(QuestNode_Root_WandererJoinAbasia).DeclaredMethod(nameof(QuestNode_Root_WandererJoinAbasia.GeneratePawn));
+            return AccessTools.Method(typeof(QuestNode_Root_WandererJoinAbasia), "GeneratePawn_NewTemp")
+                   ?? AccessTools.Method(typeof(QuestNode_Root_WandererJoinAbasia), "GeneratePawn");
         }
 
         public static void Prefix()
