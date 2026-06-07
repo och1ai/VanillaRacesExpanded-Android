@@ -111,7 +111,7 @@ As the awakening happened due to high mood, {PAWN_nameDef} has gained an inspira
 	<VREA.TriggerSelfDestructDesc>Initiate a self-destruct protocol, which drains the remaining reactor power at an extreme rate, triggering an explosion when it’s done.</VREA.TriggerSelfDestructDesc>
 	<VREA.CancelSelfDestruct>Cancel self-destruct</VREA.CancelSelfDestruct>
 	<VREA.CancelSelfDestructDesc>Cancel the self-destruct protocol.</VREA.CancelSelfDestructDesc>
-	<VREA.CommandAutoRepairDesc>If set active, an available crafter will automatically repair this android when laying in bed. If self-repair is enabled, androids will be able to repair themselves in place.</VREA.CommandAutoRepairDesc>
+	<VREA.CommandAutoRepairDesc>If set active, an available crafter will automatically repair this android wherever it is resting, downed or standing still - it no longer has to be in a stand. If self-repair is enabled, androids will be able to repair themselves in place.</VREA.CommandAutoRepairDesc>
 	<VREA.UseBedAndroid>Lay until repaired</VREA.UseBedAndroid>
 	<VREA.NoCrafter>no crafter</VREA.NoCrafter>
 	<VREA.NotSetToAutoRepair>not set to auto-repair</VREA.NotSetToAutoRepair>
@@ -121,6 +121,7 @@ As the awakening happened due to high mood, {PAWN_nameDef} has gained an inspira
 	<VREA.SelfRepair>Self-repair</VREA.SelfRepair>
 	<VREA.SelfRepairTip>Androids with self-repair enabled will automatically repair themselves on the spot at {1} the normal efficiency.</VREA.SelfRepairTip>
 	<VREA.RefuelWithNeutroamine>Refuel with neutroamine</VREA.RefuelWithNeutroamine>
+	<VREA.RepairAndroid>Repair {PAWN_labelShort}</VREA.RepairAndroid>
 	
 	<VREA.AndroidAwakenedChoices>When an android awakens, you can pick passions and a trait for an android. You will no longer be able to enter the android behaviorist station with {PAWN_nameDef}, unless you arrest and force them.</VREA.AndroidAwakenedChoices>
 	<VREA.AndroidsLowOnPower>Androids low on power</VREA.AndroidsLowOnPower>

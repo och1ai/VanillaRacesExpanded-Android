@@ -42,6 +42,7 @@ namespace VREAndroids
             }
             if (pawn != pawn2)
             {
+                // Don't repair an android that is busy repairing itself.
                 if (pawn2.CurJobDef == VREA_DefOf.VREA_RepairAndroid)
                 {
                     return false;
@@ -54,7 +55,20 @@ namespace VREAndroids
                 {
                     return false;
                 }
-                if (!pawn.CanReserveAndReach(t, PathEndMode.InteractionCell, Danger.Deadly))
+                // Only one crafter repairs a given android at a time. This avoids several free
+                // crafters being handed the same patient and then failing to reserve it.
+                List<Pawn> factionPawns = pawn2.Map.mapPawns.SpawnedPawnsInFaction(pawn.Faction);
+                for (int i = 0; i < factionPawns.Count; i++)
+                {
+                    Pawn other = factionPawns[i];
+                    if (other != pawn && other.CurJobDef == VREA_DefOf.VREA_RepairAndroid
+                        && other.CurJob.targetA.Thing == pawn2)
+                    {
+                        return false;
+                    }
+                }
+                if (!pawn.CanReserve(t, 1, -1, null, forced)
+                    || !pawn.CanReach(t, PathEndMode.InteractionCell, Danger.Deadly))
                 {
                     return false;
                 }
@@ -70,20 +84,14 @@ namespace VREAndroids
         {
             if (patient == doctor)
             {
-                if (patient.playerSettings.selfTend is false)
-                {
-                    return false;
-                }
-                else if (forced is false && patient.InBed())
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
+                // Self-repair only requires self-repair (self-tend) to be enabled.
+                return patient.playerSettings != null && patient.playerSettings.selfTend;
             }
-            return patient.InBed();
+            // Auto-repair targets androids that are downed or resting in a bed/stand. Repairing
+            // an android that is up and about is done on demand via the right-click "Repair"
+            // order or by prioritizing the work (both pass forced = true), which avoids idle
+            // androids being swarmed by every free crafter.
+            return forced || patient.Downed || patient.InBed();
         }
 
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
