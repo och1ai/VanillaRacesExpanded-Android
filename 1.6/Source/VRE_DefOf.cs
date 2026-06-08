@@ -10,7 +10,7 @@ namespace VREAndroids
         public static AndroidSettings VREA_AndroidSettings;
         public static NeedDef VREA_MemorySpace;
         public static NeedDef VREA_ReactorPower;
-        public static GeneDef VREA_Power, VREA_MemoryProcessing, VREA_MentalBreaksDisabled, VREA_Uninspired, VREA_NoSkillGain, VREA_SyntheticBody, VREA_ComponentOverheating,
+        public static GeneDef VREA_ReactorPowered, VREA_BatteryPowered, VREA_MemoryProcessing, VREA_MentalBreaksDisabled, VREA_Uninspired, VREA_NoSkillGain, VREA_SyntheticBody, VREA_ComponentOverheating,
             VREA_ComponentFreezing, VREA_SyntheticImmunity, VREA_NeutroCirculation, VREA_JoyDisabled, VREA_PsychologyDisabled;
         public static GeneDef VREA_NormalBlood, VREA_Bloodless;
         public static NeedDef VREA_FoodSuppressed;
@@ -25,6 +25,7 @@ namespace VREAndroids
         public static SoundDef Recipe_Smith;
         public static SoundDef Recipe_ButcherCorpseMechanoid;
         public static HediffDef VREA_Reactor;
+        public static HediffDef VREA_Battery;
         public static HediffDef VREA_NeutroLoss;
         public static ThingDef VREA_NeutroCasket;
         public static ThingDef VREA_Filth_Neutroamine;
@@ -86,6 +87,7 @@ namespace VREAndroids
         public static JobDef VREA_RepairAndroid;
         public static WorkGiverDef VREA_DoBillsAndroidOperation, DoBillsMedicalHumanOperation;
         public static JobDef VREA_RefuelWithNeutroamine;
+        public static JobDef VREA_ChargeAndroid;
         public static LetterDef VREA_AndroidAwakenedLetter;
         public static ThingDef VREA_Mote_AndroidReformatting;
         public static BodyPartDef Brain;

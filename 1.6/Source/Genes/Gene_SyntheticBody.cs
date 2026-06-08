@@ -16,8 +16,9 @@ namespace VREAndroids
             foreach (var bodyPart in this.pawn.def.race.body.AllParts.OrderByDescending(x => x.Index))
             {
                 // Circulatory organs (heart/kidney) depend on the blood type and are installed by
-                // Gene_AndroidBlood, so skip them here.
-                if (Utils.IsBloodOrganPart(bodyPart.def))
+                // Gene_AndroidBlood; the power core (reactor/battery) depends on the power gene and
+                // is installed by Gene_AndroidPower. Skip both here.
+                if (Utils.IsBloodOrganPart(bodyPart.def) || Utils.IsPowerCorePart(bodyPart.def))
                 {
                     continue;
                 }

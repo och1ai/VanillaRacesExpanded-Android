@@ -26,8 +26,11 @@ namespace VREAndroids
             var toil = ToilMaker.MakeToil();
             toil.initAction = delegate
             {
-                var hediff = pawn.health.hediffSet.GetFirstHediffOfDef(VREA_DefOf.VREA_Reactor) as Hediff_AndroidReactor;
-                hediff.Energy = Reactor.curEnergy;
+                var hediff = pawn.health.hediffSet.hediffs.OfType<Hediff_AndroidPowerCore>().FirstOrDefault();
+                if (hediff != null)
+                {
+                    hediff.Energy = Reactor.curEnergy;
+                }
                 pawn.TrySpawnWaste(pawn.Position, pawn.Map);
                 Reactor.Destroy();
             };

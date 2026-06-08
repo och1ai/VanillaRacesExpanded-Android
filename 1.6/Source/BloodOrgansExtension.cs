@@ -4,7 +4,7 @@ using Verse;
 namespace VREAndroids
 {
     // Placed on a blood-type hardware gene to declare which synthetic circulatory organs that
-    // blood uses (e.g. neutroamine -> neuropump/neutrofilter, hemogenic -> hemopump/hemofilter).
+    // blood uses (e.g. neutroamine -> neutropump/neutrofilter, hemogenic -> hemopump/hemofilter).
     // A blood type with no entry for a part (e.g. bloodless) gets no organ there.
     public class BloodOrgansExtension : DefModExtension
     {

@@ -5,7 +5,7 @@ using Verse;
 namespace VREAndroids
 {
     // Blood-type hardware gene. On add, installs the synthetic circulatory organs declared by its
-    // BloodOrgansExtension (e.g. neutroamine -> neuropump/neutrofilter, hemogenic ->
+    // BloodOrgansExtension (e.g. neutroamine -> neutropump/neutrofilter, hemogenic ->
     // hemopump/hemofilter). Bloodless declares none, so it gets no circulatory organs.
     // The organs are added here rather than in Gene_SyntheticBody so they don't depend on the
     // order genes are applied during pawn generation.

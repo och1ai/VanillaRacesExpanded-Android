@@ -1,4 +1,5 @@
-﻿using RimWorld;
+using System.Linq;
+using RimWorld;
 using Verse;
 
 namespace VREAndroids
@@ -11,38 +12,42 @@ namespace VREAndroids
 
         }
 
+        // The android's installed power core, whether that is a battery or a reactor.
+        public Hediff_AndroidPowerCore PowerCore =>
+            pawn.health?.hediffSet?.hediffs.OfType<Hediff_AndroidPowerCore>().FirstOrDefault();
+
         public override float CurLevel
         {
             get
             {
-                var hediff = pawn.health.hediffSet.GetFirstHediffOfDef(VREA_DefOf.VREA_Reactor) as Hediff_AndroidReactor;
-                if (hediff != null)
+                var core = PowerCore;
+                if (core != null)
                 {
-                    return hediff.Energy;
+                    return core.Energy;
                 }
                 return 0f;
             }
             set
             {
-                var hediff = pawn.health.hediffSet.GetFirstHediffOfDef(VREA_DefOf.VREA_Reactor) as Hediff_AndroidReactor;
-                if (hediff != null)
+                var core = PowerCore;
+                if (core != null)
                 {
-                    if (hediff.pawn is null)
+                    if (core.pawn is null)
                     {
-                        hediff.pawn = pawn;
+                        core.pawn = pawn;
                     }
-                    hediff.Energy = value;
-                    curLevelInt = hediff.Energy;
+                    core.Energy = value;
+                    curLevelInt = core.Energy;
                 }
             }
         }
 
         public override void SetInitialLevel()
         {
-            var hediff = pawn.health.hediffSet.GetFirstHediffOfDef(VREA_DefOf.VREA_Reactor) as Hediff_AndroidReactor;
-            if (hediff != null)
+            var core = PowerCore;
+            if (core != null)
             {
-                curLevelInt = hediff.Energy;
+                curLevelInt = core.Energy;
             }
         }
 

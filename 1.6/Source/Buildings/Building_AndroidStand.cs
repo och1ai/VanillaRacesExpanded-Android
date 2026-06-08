@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -11,6 +12,38 @@ namespace VREAndroids
         public static HashSet<Building_AndroidStand> stands = new HashSet<Building_AndroidStand>();
 
         public CompPowerTrader compPower;
+
+        // Toxic waste produced while charging, stored as wastepacks like a mech recharger.
+        // A full cycle (matching a wastepack stack) deposits one wastepack into the container.
+        public const int WasteProducedPerChargingCycle = 5;
+        private float wasteProduced;
+        private CompWasteProducer wasteProducerInt;
+        private CompThingContainer wasteContainerInt;
+        public CompWasteProducer WasteProducer => wasteProducerInt ??= this.TryGetComp<CompWasteProducer>();
+        public CompThingContainer WasteContainer => wasteContainerInt ??= this.TryGetComp<CompThingContainer>();
+
+        // The stand is jammed once a full cycle of waste has built up and a wastepack already
+        // occupies the container; it must be hauled out before charging can resume.
+        public bool IsFullOfWaste =>
+            wasteProduced >= WasteProducedPerChargingCycle && WasteContainer != null && WasteContainer.innerContainer.Any;
+
+        // Accumulates charging pollution; when a cycle fills and the container is empty, deposits a
+        // wastepack. ZeroWaste suppresses it and ExtraWaste triples the rate.
+        public void AddChargingWaste(float energyGained, Pawn android)
+        {
+            if (WasteProducer == null || android.HasActiveGene(VREA_DefOf.VREA_ZeroWaste))
+            {
+                return;
+            }
+            float factor = android.HasActiveGene(VREA_DefOf.VREA_ExtraWaste) ? 3f : 1f;
+            wasteProduced = Mathf.Clamp(wasteProduced + WasteProducedPerChargingCycle * energyGained * factor, 0f, WasteProducedPerChargingCycle);
+            if (wasteProduced >= WasteProducedPerChargingCycle && (WasteContainer == null || WasteContainer.innerContainer.Any is false))
+            {
+                wasteProduced = 0f;
+                WasteProducer.ProduceWaste(WasteProducedPerChargingCycle);
+            }
+        }
+
         public Pawn CurOccupant
         {
             get
@@ -78,6 +111,37 @@ namespace VREAndroids
                     yield return new FloatMenuOption("VREA.FreeMemorySpace".Translate() + ": " + cannotUseReason, null);
                 }
             }
+            // Only battery androids can charge, and only at a powered stand drawing from the grid.
+            if (this.Faction == Faction.OfPlayer && selPawn.GetPowerCore()?.CanRecharge == true)
+            {
+                if (compPower == null || compPower.PowerOn is false)
+                {
+                    yield return new FloatMenuOption("VREA.Recharge".Translate() + ": " + "NoPower".Translate().CapitalizeFirst(), null);
+                }
+                else if (IsFullOfWaste)
+                {
+                    yield return new FloatMenuOption("VREA.Recharge".Translate() + ": " + "VREA.AndroidStandFullOfWaste".Translate(), null);
+                }
+                else
+                {
+                    var cannotUseReason = CannotUseNowReason(selPawn);
+                    if (cannotUseReason.NullOrEmpty())
+                    {
+                        yield return new FloatMenuOption("VREA.Recharge".Translate(), delegate
+                        {
+                            if (CompAssignableToPawn.AssignedPawns.Contains(selPawn) is false)
+                            {
+                                CompAssignableToPawn.TryAssignPawn(selPawn);
+                            }
+                            selPawn.jobs.TryTakeOrderedJob(JobMaker.MakeJob(VREA_DefOf.VREA_ChargeAndroid, this));
+                        });
+                    }
+                    else
+                    {
+                        yield return new FloatMenuOption("VREA.Recharge".Translate() + ": " + cannotUseReason, null);
+                    }
+                }
+            }
         }
 
         public string CannotUseNowReason(Pawn selPawn)
@@ -115,6 +179,23 @@ namespace VREAndroids
                 return "VREA.CannotUse".Translate();
             }
             return null;
+        }
+
+        public override string GetInspectString()
+        {
+            string s = base.GetInspectString();
+            if (WasteProducer != null)
+            {
+                string waste = "WasteLevel".Translate() + ": " + (wasteProduced / WasteProducedPerChargingCycle).ToStringPercent();
+                s = s.NullOrEmpty() ? waste : s + "\n" + waste;
+            }
+            return s;
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref wasteProduced, "wasteProduced", 0f);
         }
     }
 }

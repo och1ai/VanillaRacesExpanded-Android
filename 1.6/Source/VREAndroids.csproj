@@ -89,6 +89,8 @@
     <Compile Include="AI\JobDriver_RepairAndroid.cs" />
     <Compile Include="AI\JobDriver_ReplaceReactor.cs" />
     <Compile Include="AI\JobDriver_ModifyAndroid.cs" />
+    <Compile Include="AI\JobDriver_ChargeAndroid.cs" />
+    <Compile Include="AI\JobGiver_ChargeAndroid.cs" />
     <Compile Include="AI\JobDriver_FreeMemorySpace.cs" />
     <Compile Include="AI\JobGiver_FreeMemorySpace.cs" />
     <Compile Include="AI\JobGiver_MakeLovin.cs" />
@@ -280,7 +282,6 @@
     <Compile Include="ThoughtWorkers\ThoughtWorker_Precept_AndroidPresent.cs" />
     <Compile Include="ThoughtWorkers\ThoughtWorker_Precept_AndroidsInColony.cs" />
     <Compile Include="ThoughtWorkers\ThoughtWorker_Precept_Android_Social.cs" />
-    <Compile Include="UI\Alert_AndroidsLowOnPower.cs" />
     <Compile Include="UI\ChoiceLetter_AndroidAwakened.cs" />
     <Compile Include="UI\Dialog_AndroidAwakenedChoices.cs" />
     <Compile Include="Utilities\AndroidProjectUtils.cs" />
@@ -360,6 +361,9 @@
     <Compile Include="HarmonyPatches\Pawn_HealthTracker_ShouldBeDeadFromLethalDamageThreshold_Patch.cs" />
     <Compile Include="HarmonyPatches\Pawn_HealthTracker_ShouldBeDeadFromRequiredCapacity_Patch.cs" />
     <Compile Include="HarmonyPatches\Pawn_HealthTracker_ShouldBeDowned_Patch.cs" />
+    <Compile Include="HarmonyPatches\Pawn_GetInspectString_Patch.cs" />
+    <Compile Include="HarmonyPatches\NeedsCardUtility_Patches.cs" />
+    <Compile Include="HarmonyPatches\CompPowerTrader_CompInspectStringExtra_Patch.cs" />
     <Compile Include="HarmonyPatches\Pawn_NeedsTracker_AddNeed_Patch.cs" />
     <Compile Include="HarmonyPatches\Pawn_NeedsTracker_BindDirectNeedFields_Patch.cs" />
     <Compile Include="HarmonyPatches\Pawn_NeedsTracker_ShouldHaveNeed_Patch.cs" />
@@ -381,7 +385,11 @@
     <Compile Include="Buildings\Building_NeutroCasket.cs" />
     <Compile Include="Comps\CompAssignableToPawn_AndroidStand.cs" />
     <Compile Include="Genes\Gene_SolarFlareVulnerability.cs" />
+    <Compile Include="PowerCoreExtension.cs" />
+    <Compile Include="Genes\Gene_AndroidPower.cs" />
     <Compile Include="Hediffs\Hediff_AndroidPart.cs" />
+    <Compile Include="Hediffs\Hediff_AndroidPowerCore.cs" />
+    <Compile Include="Hediffs\Hediff_AndroidBattery.cs" />
     <Compile Include="Hediffs\Hediff_AndroidReactor.cs" />
     <Compile Include="Recipes\Recipe_InstallReactor.cs" />
     <Compile Include="Needs\Need_FoodSuppressed.cs" />

@@ -3,7 +3,7 @@
 	<XenotypeDef Name="VREA_AndroidXenotypeBase" Abstract="True">
 		<genes>
 			<li>VREA_MemoryProcessing</li>
-			<li>VREA_Power</li>
+			<li>VREA_ReactorPowered</li>
 			<li>VREA_JoyDisabled</li>
 			<li>VREA_BeautyDisabled</li>
 			<li>VREA_ComfortDisabled</li>
@@ -29,7 +29,7 @@
 	<XenotypeDef Name="VREA_AndroidXenotypeAwakenedBase" Abstract="True">
 		<genes>
 			<li>VREA_MemoryProcessing</li>
-			<li>VREA_Power</li>
+			<li>VREA_ReactorPowered</li>
 			<li>VREA_SyntheticBody</li>
 			<li>VREA_NeutroCirculation</li>
 			<li>VREA_SyntheticImmunity</li>

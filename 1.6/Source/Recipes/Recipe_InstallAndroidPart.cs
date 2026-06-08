@@ -21,6 +21,12 @@ namespace VREAndroids
             {
                 return false;
             }
+            // Only reactor-powered androids can have their reactor installed/replaced; battery
+            // androids cannot swap their power core via surgery.
+            if (pawn.ActivePowerGene()?.def != VREA_DefOf.VREA_ReactorPowered)
+            {
+                return false;
+            }
             return base.AvailableOnNow(thing, part);
         }
         public override IEnumerable<BodyPartRecord> GetPartsToApplyOn(Pawn pawn, RecipeDef recipe)

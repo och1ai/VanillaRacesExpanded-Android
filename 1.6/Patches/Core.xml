@@ -13,6 +13,7 @@
 			<li Class="PatchOperationAdd">
 				<xpath>Defs/ThinkTreeDef[defName="MainColonistBehaviorCore"]/thinkRoot/subNodes/li/subNodes</xpath>
 				<value>
+					<li Class="VREAndroids.JobGiver_ChargeAndroid"/>
 					<li Class="VREAndroids.JobGiver_FreeMemorySpace"/>
 					<li Class="VREAndroids.JobGiver_MakeLovin"/>
 				</value>

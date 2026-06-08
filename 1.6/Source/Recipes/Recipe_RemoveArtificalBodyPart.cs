@@ -17,17 +17,11 @@ namespace VREAndroids
         }
         public override IEnumerable<BodyPartRecord> GetPartsToApplyOn(Pawn pawn, RecipeDef recipe)
         {
-            IEnumerable<BodyPartRecord> notMissingParts = pawn.health.hediffSet.GetNotMissingParts();
-            foreach (BodyPartRecord part in notMissingParts)
+            // Only the reactor can be surgically extracted/replaced now. Limbs, organs and the
+            // battery are no longer removable; damage is fixed through android repair instead.
+            foreach (BodyPartRecord part in pawn.health.hediffSet.GetNotMissingParts())
             {
-                if (part.def.HasAndroidPartThingVariant() is false)
-                    continue;
-
-                if (pawn.health.hediffSet.hediffs.Any((Hediff d) => (d is Hediff_Injury || d.IsPermanent()) && d.Part == part) is false)
-                {
-                    yield return part;
-                }
-                else if (part.def.forceAlwaysRemovable)
+                if (pawn.health.hediffSet.hediffs.Any(h => h.Part == part && h is Hediff_AndroidReactor))
                 {
                     yield return part;
                 }

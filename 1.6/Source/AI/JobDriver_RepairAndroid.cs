@@ -176,8 +176,17 @@ namespace VREAndroids
             return null;
         }
 
+        // Charge spent per repair step by a battery android. Reactor androids self-power repairs.
+        public const float RepairEnergyCost = 0.01f;
+
         public static void RepairTick(Pawn android)
         {
+            // Rebuilding draws from a battery's charge, mirroring how mechanoids spend energy.
+            var core = android.GetPowerCore();
+            if (core != null && core.CanRecharge)
+            {
+                core.Energy -= RepairEnergyCost;
+            }
             Hediff hediffToHeal = GetHediffToHeal(android);
             if (hediffToHeal != null)
             {
@@ -235,7 +244,11 @@ namespace VREAndroids
             if (hasAddedPart is false)
             {
                 HediffDef counterpart = Utils.GetAndroidCounterPartFor(part.def, android);
-                if (counterpart != null)
+                // The reactor is the one component repair never regenerates: a removed or spent
+                // reactor must be replaced with a crafted one via surgery. Otherwise repairing a
+                // reactor-less android would hand out a free, fully-charged reactor. The battery and
+                // every other part regenerate normally.
+                if (counterpart != null && counterpart != VREA_DefOf.VREA_Reactor)
                 {
                     android.health.AddHediff(counterpart, part);
                 }

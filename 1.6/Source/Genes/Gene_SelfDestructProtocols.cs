@@ -16,7 +16,7 @@ namespace VREAndroids
             base.TickInterval(delta);
             if (selfDestruct)
             {
-                var reactor = pawn.health.hediffSet.GetFirstHediffOfDef(VREA_DefOf.VREA_Reactor) as Hediff_AndroidReactor;
+                var reactor = pawn.GetPowerCore();
                 if (reactor != null)
                 {
                     reactor.Energy -= 1f / 600f * delta;
@@ -37,7 +37,7 @@ namespace VREAndroids
         {
             if (pawn.IsColonistPlayerControlled)
             {
-                var reactor = pawn.health.hediffSet.GetFirstHediffOfDef(VREA_DefOf.VREA_Reactor) as Hediff_AndroidReactor;
+                var reactor = pawn.GetPowerCore();
                 if (reactor != null)
                 {
                     if (selfDestruct)

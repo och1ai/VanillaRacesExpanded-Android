@@ -8,6 +8,13 @@
 		<casualInterruptible>false</casualInterruptible>
 		<playerInterruptible>false</playerInterruptible>
 	</JobDef>
+
+	<JobDef>
+		<defName>VREA_ChargeAndroid</defName>
+		<driverClass>VREAndroids.JobDriver_ChargeAndroid</driverClass>
+		<reportString>charging at TargetA</reportString>
+		<casualInterruptible>false</casualInterruptible>
+	</JobDef>
 	
   <JobDef>
     <defName>VREA_CreateAndroid</defName>

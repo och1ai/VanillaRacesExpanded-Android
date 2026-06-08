@@ -162,13 +162,100 @@ namespace VREAndroids
             return cachedBloodOrganParts.Contains(part);
         }
 
-        // Blood-aware counterpart: circulatory organs depend on the active blood gene (null when
-        // that blood type has none, e.g. bloodless); everything else uses the generic counterpart.
+        // Shared exclusion tag for the mutually-exclusive power hardware (reactor / battery).
+        // Exactly one is chosen when the body is built.
+        public const string PowerExclusionTag = "AndroidPower";
+
+        public static bool IsPowerGene(this GeneDef geneDef)
+        {
+            return geneDef.exclusionTags != null && geneDef.exclusionTags.Contains(PowerExclusionTag);
+        }
+
+        public static Gene ActivePowerGene(this Pawn pawn)
+        {
+            if (pawn?.genes == null)
+            {
+                return null;
+            }
+            foreach (var gene in pawn.genes.GenesListForReading)
+            {
+                if (gene.Active && gene.def.IsPowerGene())
+                {
+                    return gene;
+                }
+            }
+            return null;
+        }
+
+        private static HashSet<BodyPartDef> cachedPowerCoreParts;
+        // Body part(s) that hold the android's power core (the stomach by default).
+        public static bool IsPowerCorePart(BodyPartDef part)
+        {
+            if (cachedPowerCoreParts == null)
+            {
+                cachedPowerCoreParts = new HashSet<BodyPartDef>();
+                foreach (var geneDef in allAndroidGenes)
+                {
+                    var ext = geneDef.GetModExtension<PowerCoreExtension>();
+                    if (ext?.part != null)
+                    {
+                        cachedPowerCoreParts.Add(ext.part);
+                    }
+                }
+            }
+            return cachedPowerCoreParts.Contains(part);
+        }
+
+        // Reconciles the android's power core with its active power gene: removes any core that
+        // doesn't match and installs the gene's core on its part. Never overwrites manual implants.
+        public static void SyncPowerCore(Pawn pawn, GeneDef powerGeneOverride = null)
+        {
+            if (pawn?.health == null)
+            {
+                return;
+            }
+            // powerGeneOverride is used when called from a gene's PostAdd, where the gene may not be
+            // flagged Active yet and ActivePowerGene() would miss it.
+            var powerGeneDef = powerGeneOverride ?? pawn.ActivePowerGene()?.def;
+            var ext = powerGeneDef?.GetModExtension<PowerCoreExtension>();
+            if (ext?.coreHediff == null || ext.part == null)
+            {
+                return;
+            }
+            // Strip any power core that isn't the one this gene installs.
+            var toRemove = pawn.health.hediffSet.hediffs
+                .Where(h => h is Hediff_AndroidPowerCore && h.def != ext.coreHediff)
+                .ToList();
+            foreach (var stale in toRemove)
+            {
+                pawn.health.RemoveHediff(stale);
+            }
+            // Install the correct core on each matching part record if not already present.
+            foreach (var record in pawn.health.hediffSet.GetNotMissingParts().Where(p => p.def == ext.part).ToList())
+            {
+                bool alreadyHasCore = pawn.health.hediffSet.hediffs
+                    .Any(h => h.Part == record && h.def == ext.coreHediff);
+                bool hasManualAddedPart = pawn.health.hediffSet.hediffs
+                    .Any(h => h.Part == record && h is Hediff_AddedPart && h is Hediff_AndroidPowerCore is false);
+                if (alreadyHasCore is false && hasManualAddedPart is false)
+                {
+                    pawn.health.AddHediff(ext.coreHediff, record);
+                }
+            }
+        }
+
+        // Blood- and power-aware counterpart: circulatory organs depend on the active blood gene
+        // (null when that blood type has none, e.g. bloodless) and the power core depends on the
+        // active power gene (reactor vs battery); everything else uses the generic counterpart.
         public static HediffDef GetAndroidCounterPartFor(BodyPartDef part, Pawn pawn)
         {
             if (IsBloodOrganPart(part))
             {
                 return pawn.ActiveBloodGene()?.def.GetModExtension<BloodOrgansExtension>()?.GetOrgan(part);
+            }
+            if (IsPowerCorePart(part))
+            {
+                return pawn.ActivePowerGene()?.def.GetModExtension<PowerCoreExtension>()?.coreHediff;
             }
             return part.GetAndroidCounterPart();
         }
@@ -345,6 +432,12 @@ namespace VREAndroids
                 cachedPawnTypes[pawn.genes] = isAndroid = pawn.genes.GenesListForReading.Any(x => x.def.CanBeRemovedFromAndroid() is false);
             }
             return isAndroid;
+        }
+
+        // The android's installed power core (battery or reactor), or null if it has none.
+        public static Hediff_AndroidPowerCore GetPowerCore(this Pawn pawn)
+        {
+            return pawn?.health?.hediffSet?.hediffs.OfType<Hediff_AndroidPowerCore>().FirstOrDefault();
         }
 
         public static void RecheckHediffs(Pawn pawn)

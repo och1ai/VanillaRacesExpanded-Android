@@ -2,22 +2,22 @@
 <Defs>
 
 	<HediffDef ParentName="VREA_AndroidBodyPartBase">
-		<defName>VREA_NeuroPump</defName>
-		<label>neuropump</label>
-		<labelNoun>a neuropump</labelNoun>
-		<description>An installed neuropump.</description>
-		<descriptionHyperlinks><ThingDef>VREA_NeuroPump</ThingDef></descriptionHyperlinks>
-		<spawnThingOnRemoved>VREA_NeuroPump</spawnThingOnRemoved>
+		<defName>VREA_NeutroPump</defName>
+		<label>neutropump</label>
+		<labelNoun>a neutropump</labelNoun>
+		<description>An installed neutropump.</description>
+		<descriptionHyperlinks><ThingDef>VREA_NeutroPump</ThingDef></descriptionHyperlinks>
+		<spawnThingOnRemoved>VREA_NeutroPump</spawnThingOnRemoved>
 		<addedPartProps>
 			<solid>true</solid>
 		</addedPartProps>
 	</HediffDef>
 
 	<ThingDef ParentName="VREA_BodyPartAndroidBase">
-		<defName>VREA_NeuroPump</defName>
-		<label>neuropump</label>
-		<description>A synthetic, android neuropump. Distributes neutroamine across all android subsystems.</description>
-		<descriptionHyperlinks><RecipeDef>VREA_InstallNeuroPump</RecipeDef></descriptionHyperlinks>
+		<defName>VREA_NeutroPump</defName>
+		<label>neutropump</label>
+		<description>A synthetic, android neutropump. Distributes neutroamine across all android subsystems.</description>
+		<descriptionHyperlinks><RecipeDef>VREA_InstallNeutroPump</RecipeDef></descriptionHyperlinks>
 		<statBases>
 			<WorkToMake>26000</WorkToMake>
 		</statBases>
@@ -28,19 +28,19 @@
 	</ThingDef>
 
 	<RecipeDef ParentName="VREA_SurgeryInstallBodyPartAndroidBase">
-		<defName>VREA_InstallNeuroPump</defName>
-		<label>install neuropump</label>
-		<description>Install a neuropump.</description>
+		<defName>VREA_InstallNeutroPump</defName>
+		<label>install neutropump</label>
+		<description>Install a neutropump.</description>
 		<descriptionHyperlinks>
-			<ThingDef>VREA_NeuroPump</ThingDef>
-			<HediffDef>VREA_NeuroPump</HediffDef>
+			<ThingDef>VREA_NeutroPump</ThingDef>
+			<HediffDef>VREA_NeutroPump</HediffDef>
 		</descriptionHyperlinks>
-		<jobString>Installing neuropump.</jobString>
+		<jobString>Installing neutropump.</jobString>
 		<ingredients>
 			<li>
 				<filter>
 					<thingDefs>
-						<li>VREA_NeuroPump</li>
+						<li>VREA_NeutroPump</li>
 					</thingDefs>
 				</filter>
 				<count>1</count>
@@ -48,14 +48,14 @@
 		</ingredients>
 		<fixedIngredientFilter>
 			<thingDefs>
-				<li>VREA_NeuroPump</li>
+				<li>VREA_NeutroPump</li>
 			</thingDefs>
 		</fixedIngredientFilter>
 		<appliedOnFixedBodyParts>
 			<li>Heart</li>
 		</appliedOnFixedBodyParts>
-		<addsHediff>VREA_NeuroPump</addsHediff>
-		<uiIconThing>VREA_NeuroPump</uiIconThing>
+		<addsHediff>VREA_NeutroPump</addsHediff>
+		<uiIconThing>VREA_NeutroPump</uiIconThing>
 	</RecipeDef>
 
 	<HediffDef ParentName="VREA_AndroidBodyPartBase">
@@ -327,6 +327,13 @@
 			<ComponentIndustrial>2</ComponentIndustrial>
 			<Uranium>20</Uranium>
 		</costList>
+		<!-- Unlike the legacy android limb parts, the reactor stays craftable (the base recipe has
+		     no recipeUsers, so it is re-added here). -->
+		<recipeMaker>
+			<recipeUsers>
+				<li>FabricationBench</li>
+			</recipeUsers>
+		</recipeMaker>
 	</ThingDef>
 
 	<ThingDef ParentName="ResourceBase">
@@ -385,6 +392,53 @@
 		<addsHediff>VREA_Reactor</addsHediff>
 		<uiIconThing>VREA_Reactor</uiIconThing>
 	</RecipeDef>
+
+	<!-- Battery: the rechargeable alternative to the reactor. Cheaper to build, but it drains and
+	     must be topped up at a powered android stand, and repairs draw from its charge. -->
+	<HediffDef ParentName="VREA_AndroidBodyPartBase">
+		<defName>VREA_Battery</defName>
+		<label>battery</label>
+		<labelNoun>a battery</labelNoun>
+		<description>An installed battery.</description>
+		<descriptionHyperlinks><ThingDef>VREA_Battery</ThingDef></descriptionHyperlinks>
+		<hediffClass>VREAndroids.Hediff_AndroidBattery</hediffClass>
+		<spawnThingOnRemoved>VREA_Battery</spawnThingOnRemoved>
+		<initialSeverity>0</initialSeverity>
+		<stages>
+			<li>
+				<!-- a stub -->
+</li>
+			<li>
+				<minSeverity>1</minSeverity>
+				<capMods>
+					<li>
+						<capacity>Consciousness</capacity>
+						<postFactor>0</postFactor>
+					</li>
+					<li>
+						<capacity>Manipulation</capacity>
+						<postFactor>0</postFactor>
+					</li>
+				</capMods>
+			</li>
+		</stages>
+		<addedPartProps>
+			<solid>true</solid>
+		</addedPartProps>
+	</HediffDef>
+
+	<!-- The battery is chosen via the battery-powered hardware gene, not installed via surgery, so
+	     it is not craftable. This item only exists as salvage dropped when an android is shredded. -->
+	<ThingDef ParentName="VREA_BodyPartAndroidBase">
+		<defName>VREA_Battery</defName>
+		<label>battery</label>
+		<description>A synthetic android battery. It stores a limited charge that drains during operation and must be topped up at a powered android stand. Cheaper than a reactor, but androids running on a battery also spend charge while being repaired.</description>
+		<thingClass>VREAndroids.Reactor</thingClass>
+		<costList>
+			<ComponentIndustrial>3</ComponentIndustrial>
+			<Plasteel>10</Plasteel>
+		</costList>
+	</ThingDef>
 
 	<HediffDef ParentName="VREA_AndroidBodyPartBase">
 		<defName>VREA_ArtificialBrain</defName>

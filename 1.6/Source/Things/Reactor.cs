@@ -30,7 +30,8 @@ namespace VREAndroids
             {
                 yield return opt;
             }
-            if (selPawn.HasActiveGene(VREA_DefOf.VREA_SelfRecharge))
+            // Only reactor-powered androids swap reactors; batteries are not replaceable.
+            if (selPawn.HasActiveGene(VREA_DefOf.VREA_SelfRecharge) && selPawn.GetPowerCore() is Hediff_AndroidReactor)
             {
                 yield return new FloatMenuOption("VREA.ReplaceReactor".Translate(), delegate
                 {

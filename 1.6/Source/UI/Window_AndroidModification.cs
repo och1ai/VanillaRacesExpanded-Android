@@ -49,8 +49,9 @@ namespace VREAndroids
 
         public override bool GeneValidator(GeneDef x)
         {
-            // Blood type is fixed once the body is built; it cannot be swapped at this station.
-            if (x.IsBloodGene())
+            // Blood type and power source are fixed once the body is built; neither can be swapped
+            // at this station.
+            if (x.IsBloodGene() || x.IsPowerGene())
             {
                 return false;
             }

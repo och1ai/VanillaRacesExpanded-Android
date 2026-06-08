@@ -29,13 +29,19 @@ namespace VREAndroids
             {
                 if (item.def.spawnThingOnRemoved != null)
                 {
-                    if (item is Hediff_AndroidReactor hediffReactor)
+                    if (item is Hediff_AndroidPowerCore core)
                     {
-                        var itemToSpawn = hediffReactor.Energy >= 0.25f ? item.def.spawnThingOnRemoved : VREA_DefOf.VREA_SpentReactor;
+                        // A reactor below a quarter charge is junk; a battery always drops as a
+                        // (rechargeable) battery carrying whatever charge is left.
+                        var itemToSpawn = item.def.spawnThingOnRemoved;
+                        if (core is Hediff_AndroidReactor && core.Energy < 0.25f)
+                        {
+                            itemToSpawn = VREA_DefOf.VREA_SpentReactor;
+                        }
                         var thing = GenSpawn.Spawn(itemToSpawn, pos, map);
                         if (thing is Reactor reactor)
                         {
-                            reactor.curEnergy = hediffReactor.Energy;
+                            reactor.curEnergy = core.Energy;
                         }
                     }
                     else

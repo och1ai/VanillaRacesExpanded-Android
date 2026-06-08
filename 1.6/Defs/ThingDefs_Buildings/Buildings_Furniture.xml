@@ -20,6 +20,7 @@
     <defaultPlacingRot>South</defaultPlacingRot>
     <building>
       <bed_showSleeperBody>True</bed_showSleeperBody>
+      <bed_canBeMedical>false</bed_canBeMedical>
       <sowTag>SupportPlantsOnly</sowTag>
       <canPlaceOverImpassablePlant>false</canPlaceOverImpassablePlant>
       <ai_chillDestination>false</ai_chillDestination>
@@ -76,6 +77,9 @@
     <fillPercent>0.20</fillPercent>
 	<building>
 		<bed_showSleeperBody>True</bed_showSleeperBody>
+		<!-- It's a charging stand, not a hospital bed: no medical mode (which also showed the room
+		     infection-chance stat and blocked recharging). -->
+		<bed_canBeMedical>false</bed_canBeMedical>
 	</building>
     <comps>
       <li Class="CompProperties_Power">
@@ -86,6 +90,15 @@
       <li Class="CompProperties_AssignableToPawn">
         <drawAssignmentOverlay>false</drawAssignmentOverlay>
         <compClass>VREAndroids.CompAssignableToPawn_AndroidStand</compClass>
+      </li>
+      <!-- Charging a battery android pollutes: spent charge is stored as a toxic wastepack that
+           must be hauled out (vanilla WorkGiver_EmptyWasteContainer). A full stand cannot charge. -->
+      <li Class="CompProperties_WasteProducer" />
+      <li Class="CompProperties_ThingContainer">
+        <compClass>CompThingContainer</compClass>
+        <stackLimit>5</stackLimit>
+        <drawContainedThing>false</drawContainedThing>
+        <dropEffecterDef>MechChargerWasteRemoved</dropEffecterDef>
       </li>
     </comps>
     <researchPrerequisites>

@@ -46,17 +46,45 @@
 		<enablesNeeds><li>VREA_MemorySpace</li></enablesNeeds>
 	</VREAndroids.AndroidGeneDef>
 
+	<!-- Power source is a mutually-exclusive hardware choice made when the body is built, like the
+	     blood type. Reactor = self-sufficient but pricey (uranium); battery = cheap (components) but
+	     must be recharged at a stand. Both share the power icon for now. -->
 	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
-		<defName>VREA_Power</defName>
-		<label>power</label>
-		<description>Androids require a working reactor to operate. The reactor is not rechargeable, and after it’s spent, a new reactor will need to be installed. Androids without a working reactor will be unable to operate in any capacity.</description>
+		<defName>VREA_ReactorPowered</defName>
+		<label>reactor powered</label>
+		<description>This android is powered by a built-in reactor: it powers itself for years and never needs to recharge, but the reactor cannot be topped up and must be replaced once spent. Building a reactor-powered android costs uranium. An android without a working power core is unable to operate in any capacity.</description>
 		<iconPath>UI/Icons/Genes/Hardware/Gene_Power</iconPath>
 		<displayOrderInCategory>2</displayOrderInCategory>
 		<biostatCpx>3</biostatCpx>
-		<displayCategory>VREA_Hardware</displayCategory>
-		<canGenerateInGeneSet>false</canGenerateInGeneSet>
-		<isCoreComponent>true</isCoreComponent>
 		<enablesNeeds><li>VREA_ReactorPower</li></enablesNeeds>
+		<exclusionTags>
+			<li>AndroidPower</li>
+		</exclusionTags>
+		<modExtensions>
+			<li Class="VREAndroids.PowerCoreExtension">
+				<part>Stomach</part>
+				<coreHediff>VREA_Reactor</coreHediff>
+			</li>
+		</modExtensions>
+	</VREAndroids.AndroidGeneDef>
+
+	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
+		<defName>VREA_BatteryPowered</defName>
+		<label>battery powered</label>
+		<description>This android is powered by a rechargeable battery. It is cheap to build (a few components) but the battery drains during operation and must be topped up at a powered android stand, and repairs spend stored charge. An android without a working power core is unable to operate in any capacity.</description>
+		<iconPath>UI/Icons/Genes/Hardware/Gene_Power</iconPath>
+		<displayOrderInCategory>2</displayOrderInCategory>
+		<biostatCpx>3</biostatCpx>
+		<enablesNeeds><li>VREA_ReactorPower</li></enablesNeeds>
+		<exclusionTags>
+			<li>AndroidPower</li>
+		</exclusionTags>
+		<modExtensions>
+			<li Class="VREAndroids.PowerCoreExtension">
+				<part>Stomach</part>
+				<coreHediff>VREA_Battery</coreHediff>
+			</li>
+		</modExtensions>
 	</VREAndroids.AndroidGeneDef>
 
 	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
@@ -197,7 +225,7 @@
 			</li>
 			<li Class="VREAndroids.BloodOrgansExtension">
 				<organs>
-					<li><part>Heart</part><hediff>VREA_NeuroPump</hediff></li>
+					<li><part>Heart</part><hediff>VREA_NeutroPump</hediff></li>
 					<li><part>Kidney</part><hediff>VREA_Neutrofilter</hediff></li>
 				</organs>
 			</li>

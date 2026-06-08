@@ -91,17 +91,13 @@ namespace VREAndroids
             {
                 android.genes.AddGene(gene, true);
             }
-            // The body was generated as the default blood type, so make its circulatory organs
-            // match the blood type actually chosen for this android.
+            // The body was generated as the default blood type and power source, so reconcile its
+            // circulatory organs and power core with what was actually chosen for this android.
             Utils.SyncBloodOrgans(android);
-            // Only neutroamine-blood androids start needing a neutroamine top-up; normal-blood
-            // and bloodless androids do not use the neutroloss reservoir.
-            if (android.HasActiveGene(VREA_DefOf.VREA_NeutroCirculation))
-            {
-                var neutroloss = HediffMaker.MakeHediff(VREA_DefOf.VREA_NeutroLoss, android);
-                neutroloss.Severity = 1;
-                android.health.AddHediff(neutroloss);
-            }
+            Utils.SyncPowerCore(android);
+            // The android is built with a full reservoir (the blood/neutroamine was paid up front at
+            // creation), so it spawns with no neutroloss. Neutroloss only builds up later from
+            // bleeding wounds.
             curAndroidProject = null;
             GenSpawn.Spawn(android, Position, Map);
             currentWorkAmountDone = 0;

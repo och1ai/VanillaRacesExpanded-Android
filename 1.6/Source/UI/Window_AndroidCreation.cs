@@ -22,8 +22,9 @@ namespace VREAndroids
         public override string Header => "VREA.CreateAndroid".Translate();
         public override string AcceptButtonLabel => "VREA.CreateAndroid".Translate();
 
-        // Blood type can be chosen freely while building the body.
+        // Blood type and power source can be chosen freely while building the body.
         protected override bool CanSwapBlood => true;
+        protected override bool CanSwapPower => true;
         protected override void AcceptInner()
         {
             CustomXenotype customXenotype = new CustomXenotype();
@@ -87,9 +88,28 @@ namespace VREAndroids
             {
                 new ThingDefCount(VREA_DefOf.VREA_PersonaSubcore, 1),
                 new ThingDefCount(ThingDefOf.Plasteel, 125),
-                new ThingDefCount(ThingDefOf.Uranium, 30),
                 new ThingDefCount(ThingDefOf.ComponentSpacer, 7),
             };
+            // The chosen power source is the only source of the android's uranium cost: a reactor
+            // needs uranium, a battery just a few components.
+            if (SelectedGenes.Contains(VREA_DefOf.VREA_BatteryPowered))
+            {
+                requiredItems.Add(new ThingDefCount(ThingDefOf.ComponentIndustrial, 3));
+            }
+            else
+            {
+                requiredItems.Add(new ThingDefCount(ThingDefOf.Uranium, 20));
+            }
+            // The chosen blood fills the android's reservoir up front, so it spawns full: neutroamine
+            // blood needs 25 neutroamine, hemogenic blood 4 hemogen packs, bloodless needs none.
+            if (SelectedGenes.Contains(VREA_DefOf.VREA_NeutroCirculation))
+            {
+                requiredItems.Add(new ThingDefCount(VREA_DefOf.Neutroamine, 25));
+            }
+            else if (SelectedGenes.Contains(VREA_DefOf.VREA_NormalBlood))
+            {
+                requiredItems.Add(new ThingDefCount(ThingDefOf.HemogenPack, 4));
+            }
         }
     }
 }

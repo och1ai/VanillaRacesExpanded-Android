@@ -35,6 +35,9 @@ namespace VREAndroids
         // built (creation), not at the behaviorist/modification station.
         protected virtual bool CanSwapBlood => false;
 
+        // Power source (reactor / battery) is likewise a mutually-exclusive build-time choice.
+        protected virtual bool CanSwapPower => false;
+
         public Window_CreateAndroidBase(Action callback)
         {
             this.callback = callback;
@@ -47,11 +50,12 @@ namespace VREAndroids
             {
                 collapsedCategories.Add(allDef, value: false);
             }
-            // Auto-select the immutable core hardware, but pick exactly one blood type
-            // (neutroamine by default) rather than all of them.
+            // Auto-select the immutable core hardware, but pick exactly one blood type (neutroamine
+            // by default) and one power source (reactor by default) rather than all of them.
             selectedGenes = Utils.AndroidGenesGenesInOrder
-                .Where(x => x.CanBeRemovedFromAndroid() is false && x.IsBloodGene() is false).ToList();
+                .Where(x => x.CanBeRemovedFromAndroid() is false && x.IsBloodGene() is false && x.IsPowerGene() is false).ToList();
             selectedGenes.Add(VREA_DefOf.VREA_NeutroCirculation);
+            selectedGenes.Add(VREA_DefOf.VREA_ReactorPowered);
             OnGenesChanged();
         }
 
@@ -407,6 +411,22 @@ namespace VREAndroids
                             {
                                 SoundDefOf.Tick_High.PlayOneShotOnCamera();
                                 selectedGenes.RemoveAll(g => g.IsBloodGene());
+                                selectedGenes.Add(geneDef);
+                                if (!xenotypeNameLocked)
+                                {
+                                    xenotypeName = GetAndroidTypeName();
+                                }
+                                OnGenesChanged();
+                            }
+                            break;
+                        }
+                        if (geneDef.IsPowerGene() && CanSwapPower)
+                        {
+                            // Power source is mutually exclusive, same as blood: pick exactly one.
+                            if (!selectedGenes.Contains(geneDef))
+                            {
+                                SoundDefOf.Tick_High.PlayOneShotOnCamera();
+                                selectedGenes.RemoveAll(g => g.IsPowerGene());
                                 selectedGenes.Add(geneDef);
                                 if (!xenotypeNameLocked)
                                 {
