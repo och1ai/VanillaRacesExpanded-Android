@@ -37,6 +37,15 @@ namespace VREAndroids
                     }
                 }
             }
+            // Install the android's subcore in the brain: it stores the android's identity so it can be
+            // recovered and reprinted or resurrected - but, sitting in the brain, it is destroyed along
+            // with the head, which is what makes decapitation a true, permanent kill. Guarded so an
+            // android only ever carries one.
+            if (pawn.health.hediffSet.hediffs.OfType<Hediff_AndroidSubcore>().Any() is false)
+            {
+                BodyPartRecord brain = pawn.health.hediffSet.GetBrain();
+                pawn.health.AddHediff(VREA_DefOf.VREA_AndroidSubcoreImplant, brain);
+            }
             MeditationFocusTypeAvailabilityCache.ClearFor(pawn);
         }
 

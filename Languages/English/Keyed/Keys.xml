@@ -77,7 +77,7 @@
 	<VREA.LoadAndroidtype>Load androidtype</VREA.LoadAndroidtype>
 	<VREA.SaveAndroidtype>Save androidtype</VREA.SaveAndroidtype>
 	<VREA.ResourceCost>Resource cost</VREA.ResourceCost>
-	<VREA.ResourceCostDesc>The resource cost to create this android. Androids require a persona subcore, which can be created in a subcore polyanalyzer.</VREA.ResourceCostDesc>
+	<VREA.ResourceCostDesc>The resource cost to create this android. Androids require an android subcore, which can be created in a subcore polyanalyzer.</VREA.ResourceCostDesc>
 	<VREA.UniqueAndroidDesc>A unique android variant with a set of hardware and subroutines that do not fall into any known androidtype.</VREA.UniqueAndroidDesc>
 	<VREA.ModifyAndroid>Modify android</VREA.ModifyAndroid>
 	<VREA.ModifyAndroidDesc>Select an android to modify.</VREA.ModifyAndroidDesc>
@@ -131,5 +131,27 @@ As the awakening happened due to high mood, {PAWN_nameDef} has gained an inspira
 	<VREA.AndroidsLowOnPowerDesc>These androids are running low on power. Consider crafting new reactors and schedule them for reactor replacement.
 
 Androids low on power:\n\n{0}</VREA.AndroidsLowOnPowerDesc>
-	
+
+	<VREA.UnknownPersona>unknown persona</VREA.UnknownPersona>
+	<VREA.SubcoreStoredPersona>Stored android: {0}</VREA.SubcoreStoredPersona>
+	<VREA.DesignatorExtractSubcore>Extract android subcore</VREA.DesignatorExtractSubcore>
+	<VREA.DesignatorExtractSubcoreDesc>Designate a dead android's body so a colonist will extract its subcore. The recovered subcore stores the android's identity and can be used to reprint or resurrect it.</VREA.DesignatorExtractSubcoreDesc>
+	<VREA.MessageMustDesignateSubcore>Must designate a dead android that still has a subcore.</VREA.MessageMustDesignateSubcore>
+	<VREA.AndroidDestroyed>Android destroyed</VREA.AndroidDestroyed>
+	<VREA.AndroidDestroyedDesc>{PAWN_labelShort}'s chassis has been destroyed. {PAWN_possessive} subcore is still intact within the wreckage - extract it from the body and use an android printer to reprint or resurrect this android.</VREA.AndroidDestroyedDesc>
+	<VREA.AndroidDestroyedNoCoreDesc>{PAWN_labelShort}'s chassis has been destroyed and its subcore was lost with it. Without a subcore, this android cannot be resurrected.</VREA.AndroidDestroyedNoCoreDesc>
+	<VREA.PrintingProgress>Printing progress: {0}%</VREA.PrintingProgress>
+	<VREA.PrintingPaused>paused, no power</VREA.PrintingPaused>
+	<VREA.PrintAndroid>Print android</VREA.PrintAndroid>
+	<VREA.PrintAndroidDesc>Design a new android - its hardware, subroutines and appearance - and print it here. A colonist brings the materials, then the printer builds it on its own over time.</VREA.PrintAndroidDesc>
+	<VREA.ResurrectAndroid>Resurrect android</VREA.ResurrectAndroid>
+	<VREA.ResurrectAndroidDesc>Select a dead android's body to load into the printer. It is regrown back to life over time as the same android, with its subcore intact.</VREA.ResurrectAndroidDesc>
+	<VREA.ReprintAndroid>Reprint from subcore</VREA.ReprintAndroid>
+	<VREA.ReprintAndroidDesc>Select a recovered android subcore to load into the printer. A fresh body is printed carrying the stored android's full identity.</VREA.ReprintAndroidDesc>
+	<VREA.NoAndroidBodies>No dead android bodies available</VREA.NoAndroidBodies>
+	<VREA.NoSubcores>No recovered subcores available</VREA.NoSubcores>
+	<VREA.AndroidKilled>Android killed</VREA.AndroidKilled>
+	<VREA.AndroidKilledDesc>{PAWN_labelShort}'s subcore has been destroyed. With it gone, the android is truly dead now and can never be resurrected or reprinted.</VREA.AndroidKilledDesc>
+	<VREA.AndroidKilledNoBodyDesc>{0}'s subcore has been destroyed. The stored android is gone for good and can never be resurrected or reprinted.</VREA.AndroidKilledNoBodyDesc>
+
 </LanguageData>

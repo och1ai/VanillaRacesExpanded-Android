@@ -107,4 +107,17 @@
 		</requiredCapacities>
 		<canBeDoneWhileDrafted>true</canBeDoneWhileDrafted>
 	</WorkGiverDef>
+
+	<WorkGiverDef>
+		<defName>VREA_ExtractSubcore</defName>
+		<label>extract android subcore</label>
+		<giverClass>VREAndroids.WorkGiver_ExtractSubcore</giverClass>
+		<workType>Crafting</workType>
+		<verb>extract subcore from</verb>
+		<gerund>extracting subcore from</gerund>
+		<priorityInType>210</priorityInType>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+	</WorkGiverDef>
 </Defs>

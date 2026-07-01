@@ -92,7 +92,7 @@ namespace VREAndroids
             {
                 yield return opt;
             }
-            if (this.Faction == Faction.OfPlayer && selPawn.HasActiveGene(VREA_DefOf.VREA_MemoryProcessing))
+            if (this.Faction == Faction.OfPlayer && selPawn.HasActiveGene(VREA_DefOf.VREA_MemoryRecharge))
             {
                 var cannotUseReason = CannotUseNowReason(selPawn);
                 if (cannotUseReason.NullOrEmpty())

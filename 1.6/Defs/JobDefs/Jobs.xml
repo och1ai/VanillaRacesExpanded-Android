@@ -51,5 +51,11 @@
     <reportString>repairing TargetA.</reportString>
   </JobDef>
 
+  <JobDef>
+    <defName>VREA_ExtractSubcore</defName>
+    <driverClass>VREAndroids.JobDriver_ExtractSubcore</driverClass>
+    <reportString>extracting subcore from TargetA.</reportString>
+  </JobDef>
+
 </Defs>
 

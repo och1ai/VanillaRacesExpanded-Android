@@ -440,6 +440,141 @@ namespace VREAndroids
             return pawn?.health?.hediffSet?.hediffs.OfType<Hediff_AndroidPowerCore>().FirstOrDefault();
         }
 
+        public static bool HasSubcore(this Pawn pawn, out Hediff_AndroidSubcore subcore)
+        {
+            subcore = pawn?.health?.hediffSet?.hediffs.OfType<Hediff_AndroidSubcore>().FirstOrDefault();
+            return subcore != null;
+        }
+
+        // Set true while a deliberate subcore extraction is destroying an android, so the death letter
+        // stays quiet - the player ordered the extraction and does not need a "destroyed" notice.
+        public static bool extractingSubcore;
+
+        // Set true while forcing the *real* death of an android (its subcore was destroyed), so the
+        // normal "recoverable death" thought suppression is bypassed for this one moment.
+        public static bool forcingAndroidRealDeath;
+
+        // The permanent death of an android whose subcore has just been destroyed: friends and lovers now
+        // grieve as for any real death, and the player is told the android was killed for good. As long
+        // as the subcore survives, an android's "death" is only a recoverable destruction.
+        public static void AndroidRealDeath(Pawn pawn)
+        {
+            if (pawn == null)
+            {
+                return;
+            }
+            try
+            {
+                forcingAndroidRealDeath = true;
+                PawnDiedOrDownedThoughtsUtility.TryGiveThoughts(pawn, null, PawnDiedOrDownedThoughtsKind.Died);
+            }
+            finally
+            {
+                forcingAndroidRealDeath = false;
+            }
+            if (pawn.Faction == Faction.OfPlayer || PawnUtility.ShouldSendNotificationAbout(pawn))
+            {
+                Find.LetterStack.ReceiveLetter("VREA.AndroidKilled".Translate() + ": " + pawn.LabelShortCap,
+                    "VREA.AndroidKilledDesc".Translate(pawn.Named("PAWN")), LetterDefOf.NegativeEvent);
+            }
+        }
+
+        // The permanent death of an android known only by a stored subcore (no body): just notify the
+        // player their android is gone for good.
+        public static void AndroidRealDeathFromData(AndroidPersonaData data)
+        {
+            if (data == null || !data.ContainsData)
+            {
+                return;
+            }
+            // If the body this persona came from still exists, run the full grief through it so friends
+            // and lovers actually mourn (and get the notice).
+            if (data.sourcePawn != null && !data.sourcePawn.Discarded && data.sourcePawn.relations != null)
+            {
+                AndroidRealDeath(data.sourcePawn);
+                return;
+            }
+            if (data.faction != Faction.OfPlayer)
+            {
+                return;
+            }
+            Find.LetterStack.ReceiveLetter("VREA.AndroidKilled".Translate() + ": " + data.ShortName,
+                "VREA.AndroidKilledNoBodyDesc".Translate(data.name.ToStringFull), LetterDefOf.NegativeEvent);
+        }
+
+        // The standard materials to build an android body with the given hardware/subroutine genes -
+        // the same cost the creation window charges. Used for reprints (which supply their own subcore,
+        // so it is excluded there).
+        public static List<ThingDefCount> AndroidMaterialCost(IEnumerable<GeneDef> genes, bool includeSubcore)
+        {
+            var geneList = genes?.ToList() ?? new List<GeneDef>();
+            var items = new List<ThingDefCount>();
+            if (includeSubcore)
+            {
+                items.Add(new ThingDefCount(VREA_DefOf.VREA_AndroidSubcore, 1));
+            }
+            items.Add(new ThingDefCount(ThingDefOf.Plasteel, 125));
+            items.Add(new ThingDefCount(ThingDefOf.ComponentSpacer, 7));
+            items.Add(geneList.Contains(VREA_DefOf.VREA_BatteryPowered)
+                ? new ThingDefCount(ThingDefOf.ComponentIndustrial, 3)
+                : new ThingDefCount(ThingDefOf.Uranium, 20));
+            if (geneList.Contains(VREA_DefOf.VREA_NeutroCirculation))
+            {
+                items.Add(new ThingDefCount(VREA_DefOf.Neutroamine, 25));
+            }
+            else if (geneList.Contains(VREA_DefOf.VREA_NormalBlood))
+            {
+                items.Add(new ThingDefCount(ThingDefOf.HemogenPack, 4));
+            }
+            return items;
+        }
+
+        // The filth an android sprays when wounded (or when its head is torn off to pull the subcore):
+        // neutroamine for neutroamine blood, red for the hemogenic default, and nothing for a dry
+        // bloodless frame.
+        public static ThingDef SubcoreBloodDef(this Pawn pawn)
+        {
+            if (pawn.HasActiveGene(VREA_DefOf.VREA_Bloodless))
+            {
+                return null;
+            }
+            if (pawn.HasActiveGene(VREA_DefOf.VREA_NeutroCirculation))
+            {
+                return VREA_DefOf.VREA_Filth_Neutroamine;
+            }
+            return ThingDefOf.Filth_Blood;
+        }
+
+        // Tears the android's head off and sprays its blood around the body when the subcore is pulled.
+        // On a living android this severs the head and kills it; on a corpse it is purely the visual.
+        public static void BlowOffHeadForSubcore(Pawn pawn)
+        {
+            if (pawn?.health?.hediffSet == null)
+            {
+                return;
+            }
+            Map map = pawn.MapHeld;
+            IntVec3 pos = pawn.PositionHeld;
+            ThingDef blood = pawn.SubcoreBloodDef();
+            if (blood != null && map != null && pos.IsValid)
+            {
+                foreach (IntVec3 cell in GenRadial.RadialCellsAround(pos, 1.6f, true))
+                {
+                    if (cell.InBounds(map) && Rand.Chance(0.6f))
+                    {
+                        FilthMaker.TryMakeFilth(cell, map, blood, pawn.LabelShort, Rand.RangeInclusive(1, 3));
+                    }
+                }
+            }
+            BodyPartRecord head = pawn.health.hediffSet.GetNotMissingParts()
+                .FirstOrDefault(p => p.def == BodyPartDefOf.Head);
+            if (head != null)
+            {
+                pawn.health.AddHediff(HediffDefOf.MissingBodyPart, head);
+                pawn.Drawer?.renderer?.SetAllGraphicsDirty();
+            }
+        }
+
         public static void RecheckHediffs(Pawn pawn)
         {
             if (pawn.IsAndroid())

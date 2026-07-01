@@ -1,31 +1,67 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
 namespace VREAndroids
 {
+    // The work-in-progress android sitting in the printer: it holds the delivered materials and shows
+    // the print progress. During a resurrection it instead renders the actual body being regrown. The
+    // finished android is generated and spawned by the printer when the print completes.
     public class UnfinishedAndroid : ThingWithComps
     {
         public float workLeft = -10000f;
         public List<Thing> resources;
         public Building_AndroidCreationStation station;
+
+        // During a resurrection the dead body itself is shown on the printer instead of this placeholder.
+        public override void DrawAt(Vector3 drawLoc, bool flip = false)
+        {
+            Corpse corpse = station?.HeldCorpse;
+            if (corpse?.InnerPawn != null)
+            {
+                try
+                {
+                    Pawn pawn = corpse.InnerPawn;
+                    pawn.Rotation = Rot4.South;
+                    PawnUtility_GetPosture_Patch.forceStandingPawn = pawn;
+                    pawn.DynamicDrawPhaseAt(DrawPhase.EnsureInitialized, drawLoc, flip);
+                    pawn.DynamicDrawPhaseAt(DrawPhase.ParallelPreDraw, drawLoc, flip);
+                    pawn.DynamicDrawPhaseAt(DrawPhase.Draw, drawLoc, flip);
+                    return;
+                }
+                catch (Exception e)
+                {
+                    Log.ErrorOnce("[VREAndroids] Error drawing resurrecting body: " + e, thingIDNumber ^ 0x51CE);
+                }
+                finally
+                {
+                    PawnUtility_GetPosture_Patch.forceStandingPawn = null;
+                }
+            }
+            base.DrawAt(drawLoc, flip);
+        }
+
         public override string GetInspectString()
         {
             string text = base.GetInspectString();
-            if (!text.NullOrEmpty())
+            if (station != null)
             {
-                text += "\n";
+                if (!text.NullOrEmpty())
+                {
+                    text += "\n";
+                }
+                text += "VREA.PrintingProgress".Translate((station.PrintProgress * 100f).ToString("F0"));
             }
-            text += "WorkLeft".Translate() + ": " + workLeft.ToStringWorkAmount();
             return text;
         }
+
         public override IEnumerable<Gizmo> GetGizmos()
         {
             foreach (var g in base.GetGizmos())
             {
                 yield return g;
             }
-
             yield return new Command_Action
             {
                 defaultLabel = "VREA.CancelAndroid".Translate(),
@@ -40,11 +76,14 @@ namespace VREAndroids
 
         public void CancelProject()
         {
-            foreach (var resource in resources)
+            if (resources != null)
             {
-                GenPlace.TryPlaceThing(resource, Position, Map, ThingPlaceMode.Near);
+                foreach (var resource in resources)
+                {
+                    GenPlace.TryPlaceThing(resource, Position, Map, ThingPlaceMode.Near);
+                }
             }
-            if (station != null) 
+            if (station != null)
             {
                 station.curAndroidProject = null;
                 station.unfinishedAndroid = null;

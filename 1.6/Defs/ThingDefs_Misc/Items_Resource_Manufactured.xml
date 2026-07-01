@@ -2,10 +2,11 @@
 <Defs>  
 
   <ThingDef ParentName="SubcoreBase">
-    <defName>VREA_PersonaSubcore</defName>
-    <label>persona subcore</label>
+    <defName>VREA_AndroidSubcore</defName>
+    <label>android subcore</label>
+    <thingClass>VREAndroids.AndroidSubcore</thingClass>
     <description>A high-tier android brain designed as an intricate psychodynamic substrate unit, capable of supporting an advanced subpersona. This subcore is engineered to power complex and universal human-like androids. The subpersona contained within this core equals that of a live human in complexity, but is specifically programmed not to feel emotions and is confined within the core to prevent development into a fully-fledged AI.
-To create such a sophisticated subcore, the composite patterns from multiple minds are integrated using advanced algorithms and precise analog transfers, without causing harm to the subjects. The Persona subcore stands as a testament to the fusion of human intellect and cutting-edge ultratechnology.</description>
+To create such a sophisticated subcore, the composite patterns from multiple minds are integrated using advanced algorithms and precise analog transfers, without causing harm to the subjects. Once installed in an android, the subcore stores that android's identity, so it can be recovered from the body and used to reprint or resurrect the same android later.</description>
     <graphicData>
       <texPath>Items/PersonaSubcore</texPath>
       <graphicClass>Graphic_Single</graphicClass>
@@ -20,10 +21,14 @@ To create such a sophisticated subcore, the composite patterns from multiple min
     <label>unfinished android</label>
     <description>An unfinished android.</description>
 	<thingClass>VREAndroids.UnfinishedAndroid</thingClass>
+    <!-- The android-in-progress must never be hauled off the printer, and does not deteriorate while
+         it prints (even outdoors, unroofed). Drawn every frame so a resurrecting body can be rendered. -->
+    <alwaysHaulable>false</alwaysHaulable>
+    <drawerType>RealtimeOnly</drawerType>
     <statBases>
       <Flammability>0.6</Flammability>
 	  <Mass>30</Mass>
-	  <DeteriorationRate>2</DeteriorationRate>
+	  <DeteriorationRate>0</DeteriorationRate>
 	  <MarketValue>2000</MarketValue>
     </statBases>
     <graphicData>

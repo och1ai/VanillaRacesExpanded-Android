@@ -19,6 +19,18 @@
     <surgerySuccessChanceFactor>1.2</surgerySuccessChanceFactor>
   </RecipeDef>
 
+  <RecipeDef ParentName="VREA_SurgeryAndroid">
+    <defName>VREA_ExtractSubcoreSurgery</defName>
+    <label>extract subcore</label>
+    <description>Surgically pull this android's subcore. The extraction tears the head open and destroys the android, but the recovered subcore keeps its full identity - name, memories, relationships, skills and ideology - for reprinting or resurrection, and the empty chassis can still be fitted with new hardware.</description>
+    <workerClass>VREAndroids.Recipe_ExtractAndroidSubcore</workerClass>
+    <jobString>Extracting android subcore.</jobString>
+    <workAmount>2500</workAmount>
+    <surgerySuccessChanceFactor>10</surgerySuccessChanceFactor>
+    <targetsBodyPart>true</targetsBodyPart>
+    <anesthetize>false</anesthetize>
+  </RecipeDef>
+
   <RecipeDef ParentName="ButcherCorpseMechanoidBase">
     <defName>VREA_ButcherCorpseAndroid</defName>
     <label>shred android</label>

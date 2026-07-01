@@ -36,16 +36,6 @@
 		</modExtensions>
 	</VREAndroids.AndroidGeneDef>
 
-	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
-		<defName>VREA_MemoryProcessing</defName>
-		<label>memory processing</label>
-		<description>Androids have a limited amount of hard drive space, and once the empty space is depleted, an android will need to enter a reformatting state until enough memory space clears up to continue.</description>
-		<iconPath>UI/Icons/Genes/Hardware/Gene_MemoryProcessing</iconPath>
-		<displayOrderInCategory>1</displayOrderInCategory>
-		<biostatCpx>3</biostatCpx>
-		<enablesNeeds><li>VREA_MemorySpace</li></enablesNeeds>
-	</VREAndroids.AndroidGeneDef>
-
 	<!-- Power source is a mutually-exclusive hardware choice made when the body is built, like the
 	     blood type. Reactor = self-sufficient but pricey (uranium); battery = cheap (components) but
 	     must be recharged at a stand. Both share the power icon for now. -->
@@ -754,6 +744,53 @@
 		<displayOrderInCategory>24</displayOrderInCategory>
 		<biostatCpx>1</biostatCpx>
 		<biostatMet>-2</biostatMet>
+	</VREAndroids.AndroidGeneDef>
+
+	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
+		<defName>VREA_Coagulation</defName>
+		<label>coagulation</label>
+		<description>Androids with this subroutine seal ruptures in their fluid lines almost instantly, drastically reducing how fast they bleed out from wounds.</description>
+		<iconPath>UI/Icons/Genes/Subroutines/Gene_NeutroSynthesis</iconPath>
+		<displayOrderInCategory>25</displayOrderInCategory>
+		<biostatCpx>1</biostatCpx>
+		<biostatMet>-3</biostatMet>
+	</VREAndroids.AndroidGeneDef>
+
+	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
+		<defName>VREA_ToughSubroutine</defName>
+		<label>reinforced chassis</label>
+		<description>Androids with this subroutine route extra power to their structural servos and plating, taking significantly less damage from all incoming attacks.</description>
+		<iconPath>UI/Icons/Genes/Hardware/Gene_SyntheticBody</iconPath>
+		<displayOrderInCategory>26</displayOrderInCategory>
+		<biostatCpx>2</biostatCpx>
+		<biostatMet>-5</biostatMet>
+		<statFactors>
+			<IncomingDamageFactor>0.7</IncomingDamageFactor>
+		</statFactors>
+	</VREAndroids.AndroidGeneDef>
+
+	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
+		<defName>VREA_StrongMelee</defName>
+		<label>combat actuators</label>
+		<description>Androids with this subroutine drive their limbs with reinforced high-torque actuators, dealing significantly more damage in melee.</description>
+		<iconPath>UI/Icons/Genes/Subroutines/Gene_MeleeExpert</iconPath>
+		<displayOrderInCategory>27</displayOrderInCategory>
+		<biostatCpx>1</biostatCpx>
+		<biostatMet>-4</biostatMet>
+		<statFactors>
+			<MeleeDamageFactor>1.5</MeleeDamageFactor>
+		</statFactors>
+	</VREAndroids.AndroidGeneDef>
+
+	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
+		<defName>VREA_MemoryRecharge</defName>
+		<label>memory recharging</label>
+		<description>Androids with this subroutine continuously defragment and recharge their own memory, so under normal conditions they never need to reformat. Overheating still scrambles the drive: while an android is overheating its memory space drains and the memory need reappears, and if it empties the android reboots until it has cooled down and recharged.</description>
+		<iconPath>UI/Icons/Genes/Hardware/Gene_MemoryProcessing</iconPath>
+		<displayOrderInCategory>28</displayOrderInCategory>
+		<biostatCpx>2</biostatCpx>
+		<biostatMet>10</biostatMet>
+		<enablesNeeds><li>VREA_MemorySpace</li></enablesNeeds>
 	</VREAndroids.AndroidGeneDef>
 
 	<VREAndroids.AndroidGeneTemplateDef Name="VREA_GeneAptitudeBase" Abstract="True">

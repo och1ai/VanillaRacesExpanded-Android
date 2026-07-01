@@ -2,6 +2,19 @@
 <Defs>
 
 	<HediffDef>
+		<defName>VREA_AndroidSubcoreImplant</defName>
+		<label>android subcore</label>
+		<description>The android's subcore: a psychodynamic substrate that stores this android's identity. It can be recovered from the body, even after death, and used to reprint or resurrect the same android.</description>
+		<hediffClass>VREAndroids.Hediff_AndroidSubcore</hediffClass>
+		<defaultLabelColor>(0.6, 0.85, 1.0)</defaultLabelColor>
+		<isBad>false</isBad>
+		<initialSeverity>1</initialSeverity>
+		<maxSeverity>1</maxSeverity>
+		<scenarioCanAdd>false</scenarioCanAdd>
+		<everCurableByItem>false</everCurableByItem>
+	</HediffDef>
+
+	<HediffDef>
 		<defName>VREA_NeutroLoss</defName>
 		<label>neutro loss</label>
 		<description>A reduction in the normal neutroamine volume. Minor neutro loss has relatively mild effects, but when neutro loss becomes severe, all subsystems become badly impaired and the android loses the ability to move. Extreme neutro loss will never lead to death.

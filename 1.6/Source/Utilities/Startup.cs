@@ -17,6 +17,7 @@ namespace VREAndroids
             {
                 race.recipes ??= new List<RecipeDef>();
                 race.recipes.Add(VREA_DefOf.VREA_RemoveArtificialPart);
+                race.recipes.Add(VREA_DefOf.VREA_ExtractSubcoreSurgery);
             }
         }
     }

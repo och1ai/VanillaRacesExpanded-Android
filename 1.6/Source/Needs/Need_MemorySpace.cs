@@ -18,8 +18,18 @@ namespace VREAndroids
         {
             this.curLevelInt = Rand.Range(0.1f, 0.9f);
         }
+        public bool Overheating => pawn.health?.hediffSet?.HasHediff(VREA_DefOf.VREA_Overheating) ?? false;
+
         public override void NeedInterval()
         {
+            // The memory-recharge subroutine self-defragments: outside of overheating it steadily
+            // refills, so the android never has to reformat. Overheating still scrambles the drive,
+            // so memory then drains as usual and can force a reboot.
+            if (pawn.HasActiveGene(VREA_DefOf.VREA_MemoryRecharge) && !Overheating)
+            {
+                curLevelInt = Mathf.Min(1f, curLevelInt + ((1f / GenDate.TicksPerDay) * 300f));
+                return;
+            }
             curLevelInt = Mathf.Max(0, curLevelInt - ((1f / GenDate.TicksPerDay) * 150f * pawn.GetStatValue(VREA_DefOf.VREA_MemorySpaceDrainMultiplier)));
             if (curLevelInt == 0f && pawn.MentalStateDef != VREA_DefOf.VREA_Reformatting)
             {

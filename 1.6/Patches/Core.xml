@@ -49,4 +49,12 @@
 			</operations>
 		</match>
 	</Operation>
+
+	<!-- The "extract android subcore" order, used on dead android corpses. -->
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/DesignationCategoryDef[defName="Orders"]/specialDesignatorClasses</xpath>
+		<value>
+			<li>VREAndroids.Designator_ExtractSubcore</li>
+		</value>
+	</Operation>
 </Patch>

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Defs>
+  <DesignationDef>
+    <defName>VREA_ExtractSubcoreDesignation</defName>
+    <texturePath>Items/PersonaSubcore</texturePath>
+    <targetType>Thing</targetType>
+  </DesignationDef>
+
   <DesignationCategoryDef>
     <defName>VCHE_PipeNetworks</defName>
     <label>pipe networks</label>

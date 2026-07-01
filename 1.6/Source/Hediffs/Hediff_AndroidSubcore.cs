@@ -1,0 +1,61 @@
+using Verse;
+
+namespace VREAndroids
+{
+    // The subcore installed inside an android. It is a whole-body implant (no body part) so it
+    // survives any localized damage and can always be recovered from the corpse, mirroring a
+    // mechlink. It snapshots the android's identity when the android dies so the persona can later
+    // be reprinted or resurrected into a new body.
+    public class Hediff_AndroidSubcore : HediffWithComps
+    {
+        public AndroidPersonaData personaData = new AndroidPersonaData();
+
+        public override bool ShouldRemove => false;
+
+        public override void Notify_PawnDied(DamageInfo? dinfo, Hediff culprit = null)
+        {
+            personaData.CopyFromPawn(pawn);
+            base.Notify_PawnDied(dinfo, culprit);
+        }
+
+        public override void Notify_PawnKilled()
+        {
+            personaData.CopyFromPawn(pawn);
+            base.Notify_PawnKilled();
+        }
+
+        // Pops the subcore out as an item carrying the stored persona, and removes the implant so the
+        // same body cannot yield a second core. Returns the spawned item (null if it could not be
+        // placed).
+        public AndroidSubcore SpawnSubcore(ThingPlaceMode placeMode = ThingPlaceMode.Near)
+        {
+            if (!personaData.ContainsData)
+            {
+                personaData.CopyFromPawn(pawn);
+            }
+            AndroidSubcore subcore = (AndroidSubcore)ThingMaker.MakeThing(VREA_DefOf.VREA_AndroidSubcore);
+            subcore.personaData = personaData;
+            Pawn corePawn = pawn;
+            Map map = corePawn.MapHeld;
+            IntVec3 pos = corePawn.PositionHeld;
+            corePawn.health.RemoveHediff(this);
+            if (map != null && pos.IsValid)
+            {
+                GenPlace.TryPlaceThing(subcore, pos, map, placeMode);
+            }
+            // Pulling the core tears the head off, spraying the android's blood (nothing if bloodless).
+            Utils.BlowOffHeadForSubcore(corePawn);
+            return subcore;
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Deep.Look(ref personaData, "personaData");
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && personaData == null)
+            {
+                personaData = new AndroidPersonaData();
+            }
+        }
+    }
+}

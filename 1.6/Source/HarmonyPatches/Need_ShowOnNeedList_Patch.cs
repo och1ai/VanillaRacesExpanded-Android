@@ -15,6 +15,14 @@ namespace VREAndroids
                 __result = false;
                 return false;
             }
+            // The memory-recharge subroutine keeps memory topped up, so its bar only matters while
+            // overheating is scrambling the drive. Hide the full bar the rest of the time.
+            if (__instance is Need_MemorySpace memory && ___pawn.HasActiveGene(VREA_DefOf.VREA_MemoryRecharge)
+                && !memory.Overheating && memory.CurLevel >= 1f)
+            {
+                __result = false;
+                return false;
+            }
             // A non-awakened android reads like a machine: the needs tab is trimmed to just energy
             // and memory (like a mechanoid). Mood still exists for the awakening mechanic, it is
             // only hidden. Once awakened the android shows the full set of needs.

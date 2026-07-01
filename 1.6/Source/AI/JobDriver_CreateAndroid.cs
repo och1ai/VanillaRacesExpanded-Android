@@ -68,29 +68,15 @@ namespace VREAndroids
             {
                 if (job.targetQueueB != null && job.placedThings != null)
                 {
-                    Station.CreateUnfinishedAndroid(job.placedThings.Select(x => x.thing).ToList());
+                    Station.DeliverAndStart(job.placedThings.Select(x => x.thing).ToList());
                     pawn.Map.physicalInteractionReservationManager.ReleaseClaimedBy(pawn, job);
                     job.placedThings = null;
                 }
                 job.SetTarget(TargetIndex.C, Station.unfinishedAndroid);
             };
+            // The crafter's job ends once the materials are delivered and the unfinished android exists;
+            // from here the printer gestates it automatically (see Building_AndroidCreationStation.TickInterval).
             yield return toil;
-            yield return Toils_Reserve.Reserve(TargetIndex.C);
-            yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.InteractionCell);
-            var createAndroid = ToilMaker.MakeToil();
-            createAndroid.tickIntervalAction = delegate(int delta)
-            {
-                Station.DoWork(pawn, delta, out bool workDone);
-                if (workDone)
-                {
-                    Station.FinishAndroidProject();
-                    this.EndJobWith(JobCondition.Succeeded);
-                }
-            };
-            createAndroid.defaultCompleteMode = ToilCompleteMode.Delay;
-            createAndroid.WithEffect(() => VREA_DefOf.ButcherMechanoid, TargetIndex.C).WithProgressBar(TargetIndex.C, () => (Station.currentWorkAmountDone / Station.totalWorkAmount));
-            createAndroid.defaultDuration = 5000;
-            yield return createAndroid;
         }
 
         public IEnumerable<Toil> CollectIngredientsToils(TargetIndex ingredientInd, TargetIndex billGiverInd, TargetIndex ingredientPlaceCellInd, bool subtractNumTakenFromJobCount = false, bool failIfStackCountLessThanJobCount = true)

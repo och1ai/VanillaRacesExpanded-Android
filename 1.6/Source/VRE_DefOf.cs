@@ -10,7 +10,7 @@ namespace VREAndroids
         public static AndroidSettings VREA_AndroidSettings;
         public static NeedDef VREA_MemorySpace;
         public static NeedDef VREA_ReactorPower;
-        public static GeneDef VREA_ReactorPowered, VREA_BatteryPowered, VREA_MemoryProcessing, VREA_MentalBreaksDisabled, VREA_Uninspired, VREA_NoSkillGain, VREA_SyntheticBody, VREA_ComponentOverheating,
+        public static GeneDef VREA_ReactorPowered, VREA_BatteryPowered, VREA_MentalBreaksDisabled, VREA_Uninspired, VREA_NoSkillGain, VREA_SyntheticBody, VREA_ComponentOverheating,
             VREA_ComponentFreezing, VREA_SyntheticImmunity, VREA_NeutroCirculation, VREA_JoyDisabled, VREA_PsychologyDisabled;
         public static GeneDef VREA_NormalBlood, VREA_Bloodless;
         public static NeedDef VREA_FoodSuppressed;
@@ -50,7 +50,11 @@ namespace VREAndroids
         public static ThingDef VREA_AndroidCreationStation;
         public static ThingDef VREA_UnfinishedAndroid;
         public static PawnKindDef VREA_AndroidBasic;
-        public static ThingDef VREA_PersonaSubcore;
+        public static ThingDef VREA_AndroidSubcore;
+        public static RecipeDef VREA_ExtractSubcoreSurgery;
+        public static HediffDef VREA_AndroidSubcoreImplant;
+        public static DesignationDef VREA_ExtractSubcoreDesignation;
+        public static JobDef VREA_ExtractSubcore;
         public static RulePackDef VREA_AndroidTypeNameMaker;
         public static ThingDef VREA_AndroidBehavioristStation;
         public static JobDef VREA_ModifyAndroid;
@@ -63,8 +67,9 @@ namespace VREAndroids
         public static PreceptDef VRE_Androids_Tools;
         public static QuestScriptDef VREA_Quest_AndroidJoins;
 
-        public static GeneDef VREA_FireVulnerability, VREA_RainVulnerability, VREA_ColdEfficiency, VREA_Uncontrollable, 
+        public static GeneDef VREA_FireVulnerability, VREA_RainVulnerability, VREA_ColdEfficiency, VREA_Uncontrollable,
             VREA_AntiAwakeningProtocols, VREA_EmotionSimulators, VREA_PresenceFirewall, VREA_ZeroWaste, VREA_SelfRecharge, VREA_MemoryDecay;
+        public static GeneDef VREA_Coagulation, VREA_MemoryRecharge;
         public static PreceptDef MechanoidLabor_Enhanced;
         public static JobDef VREA_ReplaceReactor;
         public static BackstoryDef ColonyAndroidA01;

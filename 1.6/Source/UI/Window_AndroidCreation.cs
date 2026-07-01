@@ -33,7 +33,8 @@ namespace VREAndroids
             customXenotype.inheritable = false;
             customXenotype.iconDef = iconDef;
             station.curAndroidProject = customXenotype;
-            station.totalWorkAmount = selectedGenes.Sum(x => x.biostatCpx * 2000);
+            // The printer gestates on a fixed single cycle now, no longer scaling with gene complexity.
+            station.totalWorkAmount = Building_AndroidCreationStation.GestationTicks;
             station.currentWorkAmountDone = 0;
             station.requiredItems = requiredItems;
             if (creator != null)
@@ -86,7 +87,7 @@ namespace VREAndroids
             base.OnGenesChanged();
             requiredItems = new List<ThingDefCount>
             {
-                new ThingDefCount(VREA_DefOf.VREA_PersonaSubcore, 1),
+                new ThingDefCount(VREA_DefOf.VREA_AndroidSubcore, 1),
                 new ThingDefCount(ThingDefOf.Plasteel, 125),
                 new ThingDefCount(ThingDefOf.ComponentSpacer, 7),
             };

@@ -128,7 +128,7 @@ Persona subcores created by this device can only be used to create complex, huma
       <li>VREA_AndroidTech</li>
     </researchPrerequisites>
     <building>
-      <subcoreScannerOutputDef>VREA_PersonaSubcore</subcoreScannerOutputDef>
+      <subcoreScannerOutputDef>VREA_AndroidSubcore</subcoreScannerOutputDef>
       <subcoreScannerStartEffect>SubcoreSoftscanner_Start</subcoreScannerStartEffect>
       <subcoreScannerWorking>SubcoreSoftscanner_Working</subcoreScannerWorking>
       <subcoreScannerComplete>SubcoreSoftscanner_Complete</subcoreScannerComplete>
@@ -162,8 +162,8 @@ Persona subcores created by this device can only be used to create complex, huma
 
   <ThingDef ParentName="BuildingBase">
     <defName>VREA_AndroidCreationStation</defName>
-    <label>android creation station</label>
-    <description>A manufacturing station capable of assembling an android from a variety of materials and advanced components. The android’s appearance is almost completely customizable, however it is limited to imitations of baseline humans.\n\nDepending on the hardware and subroutine composition of an android, the work to create one and the resources required to do it might vary.</description>
+    <label>android printer</label>
+    <description>An advanced 3D printer for fabricating humanoids layer by layer, of the kind used by ultratech societies - or by archotech-sent ambassadors seeded to infiltrate and study distant human cultures. It can print new androids, resurrect a dead one, or reprint a body from a recovered subcore. Once a colonist has loaded the required materials, the printer builds the android on its own over time, drawing power throughout - no further manual labour is needed. An android's appearance, hardware and subroutines are set when the print is queued.</description>
 	<tickerType>Normal</tickerType>
     <thingClass>VREAndroids.Building_AndroidCreationStation</thingClass>
     <canOverlapZones>true</canOverlapZones>

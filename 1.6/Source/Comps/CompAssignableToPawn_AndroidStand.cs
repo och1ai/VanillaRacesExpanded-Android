@@ -18,7 +18,7 @@ namespace VREAndroids
                 {
                     return Enumerable.Empty<Pawn>();
                 }
-                return parent.Map.mapPawns.FreeColonists.Where((Pawn p) => p.HasActiveGene(VREA_DefOf.VREA_MemoryProcessing));
+                return parent.Map.mapPawns.FreeColonists.Where((Pawn p) => p.HasActiveGene(VREA_DefOf.VREA_MemoryRecharge));
             }
         }
 

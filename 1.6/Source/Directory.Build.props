@@ -1,0 +1,15 @@
+<Project>
+  <!--
+    Linux dev-build support. The hand-authored VREAndroids.csproj is a legacy
+    (non-SDK) project that targets .NET Framework v4.8 and resolves the framework
+    assemblies (System, System.Core, ...) from a Windows targeting pack. Pulling in
+    the reference-assemblies package lets `dotnet build` compile it off-Windows.
+    Repo-local only; does not affect a Windows build.
+  -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>build; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>

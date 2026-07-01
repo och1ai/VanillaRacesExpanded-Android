@@ -1,0 +1,55 @@
+<Project>
+  <!--
+    Redirect the csproj's Windows HintPaths to the local Linux RimWorld + VEF
+    assemblies. Imported after the project body, so `Reference Update` overrides the
+    HintPaths declared in VREAndroids.csproj without modifying that file.
+  -->
+  <PropertyGroup>
+    <RimWorldManaged>/home/ochiai/.local/share/Steam/steamapps/common/RimWorld/RimWorldLinux_Data/Managed</RimWorldManaged>
+    <VEFAssembly>/home/ochiai/.local/share/Steam/steamapps/workshop/content/294100/2023507013/1.6/Assemblies/VEF.dll</VEFAssembly>
+    <HarmonyAssembly>/home/ochiai/.local/share/Steam/steamapps/workshop/content/294100/2009463077/Current/Assemblies/0Harmony.dll</HarmonyAssembly>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- The Lib.Harmony NuGet's compile assets do not resolve under the legacy
+         TargetFrameworkVersion project on Linux; reference the shipped 0Harmony directly. -->
+    <Reference Include="0Harmony">
+      <HintPath>$(HarmonyAssembly)</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Update="Assembly-CSharp">
+      <HintPath>$(RimWorldManaged)/Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Update="UnityEngine">
+      <HintPath>$(RimWorldManaged)/UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Update="UnityEngine.CoreModule">
+      <HintPath>$(RimWorldManaged)/UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Update="UnityEngine.IMGUIModule">
+      <HintPath>$(RimWorldManaged)/UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Update="UnityEngine.TextRenderingModule">
+      <HintPath>$(RimWorldManaged)/UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Update="VEF">
+      <HintPath>$(VEFAssembly)</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Deploy the freshly built mod (assembly + defs + languages) into the RimWorld Mods
+       folder after every build, so the running game always loads the latest version. -->
+  <PropertyGroup>
+    <ModSourceDir>/home/ochiai/rimworld-modding/VanillaRacesExpanded-Android/</ModSourceDir>
+    <ModDeployDir>/home/ochiai/.local/share/Steam/steamapps/common/RimWorld/Mods/VanillaRacesExpanded-Android/</ModDeployDir>
+  </PropertyGroup>
+  <Target Name="DeployToGameMods" AfterTargets="Build">
+    <Exec Command="rsync -a --delete --exclude='.git' --exclude='obj' --exclude='bin' '$(ModSourceDir)' '$(ModDeployDir)'" />
+    <Message Importance="high" Text="Deployed VREAndroids mod to $(ModDeployDir)" />
+  </Target>
+</Project>
