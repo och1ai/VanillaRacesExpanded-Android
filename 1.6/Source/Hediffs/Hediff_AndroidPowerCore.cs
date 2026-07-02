@@ -72,15 +72,23 @@ namespace VREAndroids
             }
         }
 
+        // The android runs out of power (downs) only when fully drained, but once down it stays down
+        // until charged back past a small buffer - this hysteresis stops it from flickering awake for a
+        // single tick every time a trickle of charge comes in.
+        public const float WakeThreshold = 0.15f;
+
         protected void UpdateSeverity()
         {
-            if (Energy <= 0 && this.Severity != 1f)
+            if (this.Severity >= 1f)
+            {
+                if (Energy >= WakeThreshold)
+                {
+                    this.Severity = 0f;
+                }
+            }
+            else if (Energy <= 0f)
             {
                 this.Severity = 1f;
-            }
-            else if (Energy > 0 && this.Severity != 0f)
-            {
-                this.Severity = 0f;
             }
         }
 

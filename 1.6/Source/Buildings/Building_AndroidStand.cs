@@ -73,6 +73,8 @@ namespace VREAndroids
             stands.Remove(this);
         }
 
+        private Mote passiveChargeMote;
+
         public override void Tick()
         {
             base.Tick();
@@ -80,11 +82,47 @@ namespace VREAndroids
             if (occupant != null)
             {
                 occupant.Rotation = Rot4.South;
-                if (occupant.jobs.curDriver is JobDriver_LayDown)
+                if (occupant.jobs?.curDriver is JobDriver_LayDown)
                 {
                     occupant.jobs.curDriver.rotateToFace = TargetIndex.C;
                 }
+                // An android that ran its battery flat is hauled here downed and cannot run the charge
+                // job itself, so the stand tops it up automatically (the active charge job handles its
+                // own case). This is what actually recharges a hauled-in, shut-down android.
+                if (occupant.jobs?.curDriver is JobDriver_ChargeAndroid is false && TryPassiveCharge(occupant))
+                {
+                    return;
+                }
             }
+            if (compPower != null)
+            {
+                compPower.PowerOutput = -compPower.Props.basePowerConsumption;
+            }
+        }
+
+        // Charges a docked android that isn't running the charge job itself. Returns true while it is
+        // actually drawing power to charge.
+        private bool TryPassiveCharge(Pawn occupant)
+        {
+            var core = occupant.GetPowerCore();
+            if (core == null || core.CanRecharge is false || core.Energy >= 1f)
+            {
+                return false;
+            }
+            if (compPower == null || compPower.PowerOn is false || IsFullOfWaste)
+            {
+                return false;
+            }
+            float gained = 1f / JobDriver_ChargeAndroid.FullChargeTicks;
+            core.Energy = Mathf.Min(1f, core.Energy + gained);
+            AddChargingWaste(gained, occupant);
+            compPower.PowerOutput = -JobDriver_ChargeAndroid.ChargingPowerConsumption;
+            if (passiveChargeMote == null || passiveChargeMote.Destroyed)
+            {
+                passiveChargeMote = MoteMaker.MakeAttachedOverlay(occupant, ThingDefOf.Mote_MechCharging, Vector3.zero);
+            }
+            passiveChargeMote?.Maintain();
+            return true;
         }
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn selPawn)
         {

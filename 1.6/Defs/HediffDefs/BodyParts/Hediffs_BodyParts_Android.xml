@@ -397,11 +397,13 @@
 	     must be topped up at a powered android stand, and repairs draw from its charge. -->
 	<HediffDef ParentName="VREA_AndroidBodyPartBase">
 		<defName>VREA_Battery</defName>
-		<label>battery</label>
-		<labelNoun>a battery</labelNoun>
-		<description>An installed battery.</description>
+		<label>capacitor array</label>
+		<labelNoun>a capacitor array</labelNoun>
+		<description>A whole-body capacitor array that holds the android's operating charge. It is not a discrete organ, so damage cannot knock out the charge - it simply drains during operation and is topped up at a powered android stand.</description>
 		<descriptionHyperlinks><ThingDef>VREA_Battery</ThingDef></descriptionHyperlinks>
 		<hediffClass>VREAndroids.Hediff_AndroidBattery</hediffClass>
+		<countsAsAddedPartOrImplant>false</countsAsAddedPartOrImplant>
+		<addedPartProps Inherit="False" />
 		<spawnThingOnRemoved>VREA_Battery</spawnThingOnRemoved>
 		<initialSeverity>0</initialSeverity>
 		<stages>
@@ -422,9 +424,6 @@
 				</capMods>
 			</li>
 		</stages>
-		<addedPartProps>
-			<solid>true</solid>
-		</addedPartProps>
 	</HediffDef>
 
 	<!-- The battery is chosen via the battery-powered hardware gene, not installed via surgery, so

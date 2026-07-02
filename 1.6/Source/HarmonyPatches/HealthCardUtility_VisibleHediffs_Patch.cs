@@ -81,6 +81,13 @@ namespace VREAndroids
                     {
                         return false;
                     }
+                    // The capacitor array is distributed mechanite power storage spread through the whole
+                    // body, not a discrete organ, so it isn't listed as a health entry (its charge shows
+                    // on the needs bar instead). The reactor stays visible - it is a physical part.
+                    if (d is Hediff_AndroidBattery)
+                    {
+                        return false;
+                    }
                     return (showBloodLoss || d.def != VREA_DefOf.VREA_NeutroLoss) ? true : false;
                 });
                 foreach (Hediff item in enumerable)

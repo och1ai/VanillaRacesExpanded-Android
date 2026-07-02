@@ -56,6 +56,7 @@ namespace VREAndroids
         public static DesignationDef VREA_ExtractSubcoreDesignation;
         public static JobDef VREA_ExtractSubcore;
         public static RulePackDef VREA_AndroidTypeNameMaker;
+        public static RulePackDef VREA_Transition_LowPower;
         public static ThingDef VREA_AndroidBehavioristStation;
         public static JobDef VREA_ModifyAndroid;
         public static EffecterDef VREA_ModifyingAndroidEffecter;

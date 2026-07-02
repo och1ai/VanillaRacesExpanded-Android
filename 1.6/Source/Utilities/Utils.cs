@@ -218,7 +218,7 @@ namespace VREAndroids
             // flagged Active yet and ActivePowerGene() would miss it.
             var powerGeneDef = powerGeneOverride ?? pawn.ActivePowerGene()?.def;
             var ext = powerGeneDef?.GetModExtension<PowerCoreExtension>();
-            if (ext?.coreHediff == null || ext.part == null)
+            if (ext?.coreHediff == null)
             {
                 return;
             }
@@ -229,6 +229,17 @@ namespace VREAndroids
             foreach (var stale in toRemove)
             {
                 pawn.health.RemoveHediff(stale);
+            }
+            // A core with no part (the battery / capacitor array) is a whole-body system: its charge is
+            // never tied to a destructible organ, so damage can't knock it out - it works like a mech's
+            // energy. A core with a part (the reactor) is a physical, destructible/replaceable implant.
+            if (ext.part == null)
+            {
+                if (pawn.health.hediffSet.hediffs.Any(h => h.def == ext.coreHediff) is false)
+                {
+                    pawn.health.AddHediff(ext.coreHediff);
+                }
+                return;
             }
             // Install the correct core on each matching part record if not already present.
             foreach (var record in pawn.health.hediffSet.GetNotMissingParts().Where(p => p.def == ext.part).ToList())
@@ -453,6 +464,10 @@ namespace VREAndroids
         // Set true while forcing the *real* death of an android (its subcore was destroyed), so the
         // normal "recoverable death" thought suppression is bypassed for this one moment.
         public static bool forcingAndroidRealDeath;
+
+        // Set true while an android is being downed by running out of power, so the generic
+        // "a capacitor array caused X..." combat-log line is swapped for a clearer low-power notice.
+        public static bool suppressAndroidDownLog;
 
         // The permanent death of an android whose subcore has just been destroyed: friends and lovers now
         // grieve as for any real death, and the player is told the android was killed for good. As long

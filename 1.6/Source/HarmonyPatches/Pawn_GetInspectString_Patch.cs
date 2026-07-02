@@ -20,8 +20,19 @@ namespace VREAndroids
             {
                 return;
             }
-            string line = "VREA.AndroidEnergy".Translate() + ": " + need.CurLevelPercentage.ToStringPercent()
-                + " (-" + "PerDay".Translate(core.DrainPerDay.ToStringPercent()) + ")";
+            string line;
+            if (core is Hediff_AndroidBattery && core.Severity >= 1f)
+            {
+                // Out of power and dormant, trickle self-charging - mirrors a mech's "Dormant self-charging".
+                line = "VREA.AndroidEnergy".Translate() + ": " + need.CurLevelPercentage.ToStringPercent()
+                    + " (+" + "PerDay".Translate(Hediff_AndroidBattery.SlowRechargePerDay.ToStringPercent()) + ")"
+                    + "\n" + "VREA.AndroidDormantCharging".Translate();
+            }
+            else
+            {
+                line = "VREA.AndroidEnergy".Translate() + ": " + need.CurLevelPercentage.ToStringPercent()
+                    + " (-" + "PerDay".Translate(core.DrainPerDay.ToStringPercent()) + ")";
+            }
             __result = __result.NullOrEmpty() ? line : __result + "\n" + line;
         }
     }

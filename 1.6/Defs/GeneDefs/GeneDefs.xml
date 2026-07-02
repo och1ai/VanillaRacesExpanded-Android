@@ -43,7 +43,7 @@
 		<defName>VREA_ReactorPowered</defName>
 		<label>reactor powered</label>
 		<description>This android is powered by a built-in reactor: it powers itself for years and never needs to recharge, but the reactor cannot be topped up and must be replaced once spent. Building a reactor-powered android costs uranium. An android without a working power core is unable to operate in any capacity.</description>
-		<iconPath>UI/Icons/Genes/Hardware/Gene_Power</iconPath>
+		<iconPath>Items/HealthItemAndroid</iconPath>
 		<displayOrderInCategory>2</displayOrderInCategory>
 		<biostatCpx>3</biostatCpx>
 		<enablesNeeds><li>VREA_ReactorPower</li></enablesNeeds>
@@ -62,7 +62,7 @@
 		<defName>VREA_BatteryPowered</defName>
 		<label>battery powered</label>
 		<description>This android is powered by a rechargeable battery. It is cheap to build (a few components) but the battery drains during operation and must be topped up at a powered android stand, and repairs spend stored charge. An android without a working power core is unable to operate in any capacity.</description>
-		<iconPath>UI/Icons/Genes/Hardware/Gene_Power</iconPath>
+		<iconPath>UI/Icons/Genes/Hardware/Gene_BatteryPowered</iconPath>
 		<displayOrderInCategory>2</displayOrderInCategory>
 		<biostatCpx>3</biostatCpx>
 		<enablesNeeds><li>VREA_ReactorPower</li></enablesNeeds>
@@ -71,7 +71,6 @@
 		</exclusionTags>
 		<modExtensions>
 			<li Class="VREAndroids.PowerCoreExtension">
-				<part>Stomach</part>
 				<coreHediff>VREA_Battery</coreHediff>
 			</li>
 		</modExtensions>

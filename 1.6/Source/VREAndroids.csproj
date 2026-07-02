@@ -365,6 +365,7 @@
     <Compile Include="HarmonyPatches\Need_ShowOnNeedList_Patch.cs" />
     <Compile Include="HarmonyPatches\ThingWithComps_GetGizmos_Patch.cs" />
     <Compile Include="HarmonyPatches\Pawn_HealthTracker_NotifyPlayerOfKilled_Patch.cs" />
+    <Compile Include="HarmonyPatches\Pawn_HealthTracker_MakeDowned_Patch.cs" />
     <Compile Include="HarmonyPatches\PawnDiedOrDownedThoughtsUtility_TryGiveThoughts_Patch.cs" />
     <Compile Include="HarmonyPatches\Corpse_Destroy_Patch.cs" />
     <Compile Include="HarmonyPatches\Page_ConfigureStartingPawns_DrawXenotypeEditorButton_Patch.cs" />

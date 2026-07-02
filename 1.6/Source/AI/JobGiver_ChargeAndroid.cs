@@ -9,7 +9,9 @@ namespace VREAndroids
     // Androids running on a reactor power themselves and never use this.
     public class JobGiver_ChargeAndroid : ThinkNode_JobGiver
     {
-        public const float ChargeThreshold = 0.25f;
+        // Matches the vanilla mechanoid default: they go recharge once their energy drops below 30%,
+        // and (via the charge job) top all the way back up to 100%.
+        public const float ChargeThreshold = 0.3f;
 
         public override float GetPriority(Pawn pawn)
         {
