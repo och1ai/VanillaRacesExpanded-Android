@@ -4,9 +4,12 @@ using Verse;
 
 namespace VREAndroids
 {
-    // Reconciles every android's circulatory organs with its blood type once per load, so androids
-    // built before the per-blood-type organs existed (or with a mismatched organ) get corrected.
-    // SyncBloodOrgans is idempotent, so this is a no-op for androids that are already correct.
+    // Reconciles every android once per load. All three helpers are idempotent, so this is a no-op for
+    // androids that are already correct:
+    //  - blood organs vs blood type (androids built before per-blood-type organs, or with a mismatch),
+    //  - ideoligion vs the ideological subroutine (an android without it must follow no ideoligion;
+    //    loading re-assigns colony ideoligions, so this clears them again),
+    //  - duplicate genes left over from the old single-instance removal bug.
     public class GameComponent_AndroidBloodOrgans : GameComponent
     {
         public GameComponent_AndroidBloodOrgans(Game game)
@@ -24,7 +27,9 @@ namespace VREAndroids
                 {
                     if (pawns[j].IsAndroid())
                     {
+                        Utils.RemoveDuplicateGenes(pawns[j]);
                         Utils.SyncBloodOrgans(pawns[j]);
+                        Utils.SyncAndroidIdeo(pawns[j]);
                     }
                 }
             }

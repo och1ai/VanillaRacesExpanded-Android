@@ -15,10 +15,10 @@ namespace VREAndroids
                 __result = false;
                 return false;
             }
-            // The memory-recharge subroutine keeps memory topped up, so its bar only matters while
-            // overheating is scrambling the drive. Hide the full bar the rest of the time.
-            if (__instance is Need_MemorySpace memory && ___pawn.HasActiveGene(VREA_DefOf.VREA_MemoryRecharge)
-                && !memory.Overheating && memory.CurLevel >= 1f)
+            // Only show the memory bar when the android actually has a memory system to maintain:
+            // the memory hardware (always), or the component-overheating hardware while overheating.
+            // Otherwise the drive is idle and the bar is hidden.
+            if (__instance is Need_MemorySpace memory && !memory.MemoryActive)
             {
                 __result = false;
                 return false;

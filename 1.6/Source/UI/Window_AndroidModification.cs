@@ -20,6 +20,9 @@ namespace VREAndroids
             this.android = android;
             this.selectedGenes = android.genes.GenesListForReading.Where(x => x.def.IsAndroidGene()).Select(x => x.def).ToList();
             forcePause = true;
+            // Recompute biostats/conflicts for the android's actual components (the base ctor seeded a
+            // default loadout before we swapped in this pawn's genes).
+            OnGenesChanged();
         }
         public override string Header => "VREA.ModifyAndroid".Translate();
         public override string AcceptButtonLabel => "VREA.ModifyAndroid".Translate();
@@ -47,13 +50,22 @@ namespace VREAndroids
             station.initModification = true;
         }
 
+        // The installed blood type, power source and chassis show in the selected list but are locked:
+        // this station can reprogram subroutines and swap other hardware, but the body's fixed power
+        // core (reactor/battery), blood system and chassis can only be chosen when the body is printed.
+        protected override bool IsGeneLocked(GeneDef geneDef)
+        {
+            return geneDef.IsBloodGene() || geneDef.IsPowerGene() || geneDef.IsChassisGene();
+        }
+
         public override bool GeneValidator(GeneDef x)
         {
-            // Blood type and power source are fixed once the body is built; neither can be swapped
-            // at this station.
-            if (x.IsBloodGene() || x.IsPowerGene())
+            // Blood type, power source and chassis are fixed once the body is built. Show only the
+            // option this android actually has (locked) and hide the alternatives, so the hardware
+            // list mirrors the selected list instead of offering a swap.
+            if (x.IsBloodGene() || x.IsPowerGene() || x.IsChassisGene())
             {
-                return false;
+                return selectedGenes.Contains(x);
             }
             if (android.IsAwakened())
             {

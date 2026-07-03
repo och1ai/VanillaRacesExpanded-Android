@@ -110,6 +110,7 @@
     <Compile Include="FloatMenuOptionProviders\FloatMenuOptionProvider_RefuelWithNeutroamine.cs" />
     <Compile Include="FloatMenuOptionProviders\FloatMenuOptionProvider_RepairAndroid.cs" />
     <Compile Include="Genes\Gene_AndroidBlood.cs" />
+    <Compile Include="Genes\Gene_Ideological.cs" />
     <Compile Include="BloodOrgansExtension.cs" />
     <Compile Include="GameComponent_AndroidBloodOrgans.cs" />
     <Compile Include="Genes\Gene_NeutroSynthesis.cs" />
@@ -324,6 +325,11 @@
     <Compile Include="HarmonyPatches\GeneDef_GetDescriptionFull_Patch.cs" />
     <Compile Include="HarmonyPatches\GeneDef_SpecialDisplayStats_Patch.cs" />
     <Compile Include="HarmonyPatches\GeneUIUtility_DrawGenesInfo_Patch.cs" />
+    <Compile Include="HarmonyPatches\Pawn_IdeoTracker_SetIdeo_Patch.cs" />
+    <Compile Include="HarmonyPatches\InspectTabBase_UpdateSize_Patch.cs" />
+    <Compile Include="HarmonyPatches\CompAbilityEffect_Convert_Valid_Patch.cs" />
+    <Compile Include="HarmonyPatches\Pawn_Kill_Patch.cs" />
+    <Compile Include="HarmonyPatches\Pawn_RelationsTracker_Notify_PawnKilled_Patch.cs" />
     <Compile Include="HarmonyPatches\GeneUtility_GenesInOrder_Patch.cs" />
     <Compile Include="HarmonyPatches\HealthAIUtility_ShouldBeTendedNowByPlayer_Patch.cs" />
     <Compile Include="HarmonyPatches\HealthCardUtility_CanDoRecipeWithMedicineRestriction_Patch.cs" />

@@ -165,19 +165,19 @@ namespace VREAndroids
             var android = Occupant;
             android.genes.xenotypeName = curAndroidProject.name;
             android.genes.iconDef = curAndroidProject.IconDef;
-            foreach (var gene in Utils.allAndroidGenes)
+            // Strip every android gene the pawn currently has - all instances, iterating its own list,
+            // so any accidental duplicate is cleared too (the old GetGene loop removed only one copy of
+            // each def and could leave/grow duplicates). Then re-add exactly the chosen set once each.
+            foreach (var gene in android.genes.GenesListForReading.Where(g => g.def.IsAndroidGene()).ToList())
             {
-                var existingGene = android.genes.GetGene(gene);
-                if (existingGene != null)
-                {
-                    android.genes.RemoveGene(existingGene);
-                }
+                android.genes.RemoveGene(gene);
             }
 
-            foreach (GeneDef gene in curAndroidProject.genes.OrderByDescending(x => x.CanBeRemovedFromAndroid() is false).ToList())
+            foreach (GeneDef gene in curAndroidProject.genes.Distinct().OrderByDescending(x => x.CanBeRemovedFromAndroid() is false).ToList())
             {
                 android.genes.AddGene(gene, true);
             }
+            Utils.RemoveDuplicateGenes(android);
             curAndroidProject = null;
             EjectContents(); 
             innerContainer.ClearAndDestroyContents();

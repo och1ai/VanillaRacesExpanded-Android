@@ -289,6 +289,13 @@ namespace VREAndroids
                     pawn.relations.AddDirectRelation(relation.def, relation.otherPawn);
                 }
             }
+            // The persona has moved into this freshly printed body, so strip the old source body's
+            // relationships. Otherwise both the old (now dead) body and the reprint linger as separate
+            // relations on everyone else - e.g. two "lover" entries, one marked Dead.
+            if (sourcePawn != null && sourcePawn != pawn && sourcePawn.relations != null)
+            {
+                sourcePawn.relations.ClearAllRelations();
+            }
         }
 
         private void RestoreIdeology(Pawn pawn)

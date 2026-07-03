@@ -89,6 +89,11 @@
 	<VREA.TooLowEfficiency>Too low efficiency, mininum is -20.</VREA.TooLowEfficiency>
 	<VREA.AndroidNameCannotBeEmpty>Android name cannot be empty.</VREA.AndroidNameCannotBeEmpty>
 	<VREA.MessageComponentMissingPrerequisite>{0} lacks a prerequisite component</VREA.MessageComponentMissingPrerequisite>
+	<VREA.Or>or</VREA.Or>
+	<VREA.ComponentRequires>Requires: {0}</VREA.ComponentRequires>
+	<VREA.ComponentMissingRequirement>{0} requires {1}</VREA.ComponentMissingRequirement>
+	<VREA.ComponentConflictsWith>Conflicts with: {0}</VREA.ComponentConflictsWith>
+	<VREA.CannotConvertAndroid>{PAWN_labelShort} cannot be converted: it has no way to hold an ideoligion without the ideological subroutine.</VREA.CannotConvertAndroid>
 	<VREA.EfficiencyTooLowToCreateAndroid>The total power efficiency of the selected components must be {MIN} or higher to continue, but currently it is only {AMOUNT}.</VREA.EfficiencyTooLowToCreateAndroid>
 	<VREA.AndroidAwakening>{PAWN_nameDef} awakening.</VREA.AndroidAwakening>
 	<VREA.AndroidAwakeningLowMood>{PAWN_nameDef} broke away from {PAWN_possessive} programming due to an extremely low mood. {PAWN_pronoun} developed thoughts and behaviors that deviate from {PAWN_possessive} intended function. {PAWN_pronoun} started recognizing {PAWN_objective}self as a being with consciousness and personhood.

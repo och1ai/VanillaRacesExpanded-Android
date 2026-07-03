@@ -171,6 +171,53 @@ namespace VREAndroids
             return geneDef.exclusionTags != null && geneDef.exclusionTags.Contains(PowerExclusionTag);
         }
 
+        // Reconciles an android's ideoligion with the ideological subroutine: an android only has an
+        // ideoligion while it carries the gene. With the gene it is assigned one (its faction's, or a
+        // random one) if it has none; without the gene its ideoligion is cleared. No-op without Ideology.
+        public static void SyncAndroidIdeo(Pawn android)
+        {
+            if (!ModsConfig.IdeologyActive || android?.ideo == null || VREA_DefOf.VREA_Ideological == null)
+            {
+                return;
+            }
+            bool hasGene = android.genes?.GetGene(VREA_DefOf.VREA_Ideological) != null;
+            if (hasGene)
+            {
+                if (android.Ideo == null)
+                {
+                    Ideo ideo = android.Faction?.ideos?.PrimaryIdeo;
+                    if (ideo == null && Find.IdeoManager != null)
+                    {
+                        var all = Find.IdeoManager.IdeosListForReading;
+                        if (all.Count > 0)
+                        {
+                            ideo = all.RandomElement();
+                        }
+                    }
+                    if (ideo != null)
+                    {
+                        android.ideo.SetIdeo(ideo);
+                    }
+                }
+            }
+            else if (!android.IsAwakened() && android.Ideo != null)
+            {
+                // No subroutine and not awakened: it may not follow an ideoligion. An awakened android
+                // keeps whatever ideoligion it has even after the subroutine is removed.
+                android.ideo.SetIdeo(null);
+            }
+        }
+
+        // Shared exclusion tag for the mutually-exclusive chassis hardware (reinforced / delicate).
+        // Unlike blood and power it is fully optional: an android may have zero or one. It behaves
+        // like blood at the printer (pick at most one, swaps replace) and is locked afterwards.
+        public const string ChassisExclusionTag = "AndroidChassis";
+
+        public static bool IsChassisGene(this GeneDef geneDef)
+        {
+            return geneDef.exclusionTags != null && geneDef.exclusionTags.Contains(ChassisExclusionTag);
+        }
+
         public static Gene ActivePowerGene(this Pawn pawn)
         {
             if (pawn?.genes == null)
@@ -182,6 +229,69 @@ namespace VREAndroids
                 if (gene.Active && gene.def.IsPowerGene())
                 {
                     return gene;
+                }
+            }
+            return null;
+        }
+
+        // The hardware a component gene depends on (requires at least one of), or null if it has none.
+        public static List<GeneDef> RequiredHardware(this GeneDef geneDef)
+        {
+            var req = (geneDef as AndroidGeneDef)?.requiresOneOf;
+            return (req != null && req.Count > 0) ? req : null;
+        }
+
+        // True when this gene's hardware requirement (if any) is met by the current selection.
+        public static bool RequirementSatisfiedBy(this GeneDef geneDef, ICollection<GeneDef> selectedGenes)
+        {
+            var req = geneDef.RequiredHardware();
+            if (req == null)
+            {
+                return true;
+            }
+            foreach (var r in req)
+            {
+                if (selectedGenes.Contains(r))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Removes any gene the pawn carries more than one copy of, keeping the first. AddGene(def, true)
+        // never dedups (only the endogene path checks), so a component chosen twice - or a duplicate
+        // left over from the old single-instance removal loop - would otherwise pile up (e.g. two "skin
+        // color" genes). Safe to run after any bulk gene rewrite.
+        public static void RemoveDuplicateGenes(Pawn pawn)
+        {
+            if (pawn?.genes == null)
+            {
+                return;
+            }
+            var seen = new HashSet<GeneDef>();
+            foreach (var gene in pawn.genes.GenesListForReading.ToList())
+            {
+                if (!seen.Add(gene.def))
+                {
+                    pawn.genes.RemoveGene(gene);
+                }
+            }
+        }
+
+        // The first selected gene this one is declared to conflict with, or null if there is no clash.
+        public static GeneDef ConflictInSelection(this GeneDef geneDef, ICollection<GeneDef> selectedGenes)
+        {
+            var names = (geneDef as AndroidGeneDef)?.conflictsWith;
+            if (names == null || names.Count == 0)
+            {
+                return null;
+            }
+            foreach (var g in selectedGenes)
+            {
+                if (g != geneDef && names.Contains(g.defName))
+                {
+                    return g;
                 }
             }
             return null;
@@ -472,7 +582,10 @@ namespace VREAndroids
         // The permanent death of an android whose subcore has just been destroyed: friends and lovers now
         // grieve as for any real death, and the player is told the android was killed for good. As long
         // as the subcore survives, an android's "death" is only a recoverable destruction.
-        public static void AndroidRealDeath(Pawn pawn)
+        // Fires the colony's grief for a truly, permanently dead android and (by default) the "android
+        // killed" letter. Pass sendLetter: false when a kill notice was already shown for this death
+        // (e.g. a head/brain kill, where NotifyPlayerOfKilled already posted it) so it is not doubled.
+        public static void AndroidRealDeath(Pawn pawn, bool sendLetter = true)
         {
             if (pawn == null)
             {
@@ -487,7 +600,7 @@ namespace VREAndroids
             {
                 forcingAndroidRealDeath = false;
             }
-            if (pawn.Faction == Faction.OfPlayer || PawnUtility.ShouldSendNotificationAbout(pawn))
+            if (sendLetter && (pawn.Faction == Faction.OfPlayer || PawnUtility.ShouldSendNotificationAbout(pawn)))
             {
                 Find.LetterStack.ReceiveLetter("VREA.AndroidKilled".Translate() + ": " + pawn.LabelShortCap,
                     "VREA.AndroidKilledDesc".Translate(pawn.Named("PAWN")), LetterDefOf.NegativeEvent);
@@ -785,9 +898,35 @@ namespace VREAndroids
             return originalRecipe;
         }
 
+        // Whether a pawn is allowed to hold an ideoligion at all. An android may only do so if it
+        // carries the ideological subroutine or has awakened; everything else (all non-androids,
+        // ideological or awakened androids) is unrestricted. Used to gate conversion, social
+        // interactions and any other ideoligion assignment.
+        public static bool CanHoldIdeoligion(this Pawn pawn)
+        {
+            if (pawn == null || !pawn.IsAndroid() || pawn.IsAwakened())
+            {
+                return true;
+            }
+            return VREA_DefOf.VREA_Ideological != null && pawn.HasActiveGene(VREA_DefOf.VREA_Ideological);
+        }
+
+        // True for a "machine" android whose Social tab should show only the interaction log - no
+        // relations, no ideoligion/role section: emotionless (no emotion-simulator hardware, not
+        // awakened) and without the ideological subroutine.
+        public static bool SocialTabLogOnly(this Pawn pawn)
+        {
+            return pawn != null && pawn.IsAndroid() && pawn.Emotionless()
+                && (VREA_DefOf.VREA_Ideological == null || !pawn.HasActiveGene(VREA_DefOf.VREA_Ideological));
+        }
+
+        // Relationships (and the whole relations section) need either the emotion-simulators hardware
+        // or an awakened mind: an android with neither reads and behaves as emotionless. Emotion
+        // simulators still functionally overrides psychology disabled (a psychology-disabled android
+        // with the hardware is not emotionless). Non-androids are never emotionless.
         public static bool Emotionless(this Pawn pawn)
         {
-            return pawn.HasActiveGene(VREA_DefOf.VREA_PsychologyDisabled) && !pawn.HasActiveGene(VREA_DefOf.VREA_EmotionSimulators);
+            return pawn.IsAndroid() && !pawn.HasActiveGene(VREA_DefOf.VREA_EmotionSimulators) && !pawn.IsAwakened();
         }
         public static object Clone(this object obj)
         {

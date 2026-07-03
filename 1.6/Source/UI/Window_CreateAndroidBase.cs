@@ -38,6 +38,62 @@ namespace VREAndroids
         // Power source (reactor / battery) is likewise a mutually-exclusive build-time choice.
         protected virtual bool CanSwapPower => false;
 
+        // Chassis (reinforced / delicate) is a mutually-exclusive but fully optional build-time choice.
+        protected virtual bool CanSwapChassis => false;
+
+        // A locked component is shown in the selected list but cannot be toggled off or swapped (used
+        // by the behaviorist station for the fixed blood/power hardware).
+        protected virtual bool IsGeneLocked(GeneDef geneDef) => false;
+
+        // "reactor powered" / "neutroamine blood or hemogenic blood" - the hardware a component needs,
+        // formatted for a tooltip line, or null when it has no requirement.
+        protected string RequiredHardwareLabel(GeneDef geneDef)
+        {
+            var req = geneDef.RequiredHardware();
+            if (req == null)
+            {
+                return null;
+            }
+            return string.Join(" " + "VREA.Or".Translate() + " ", req.Select(x => x.LabelCap.Resolve()));
+        }
+
+        // First selected component whose required hardware is missing, or null if all requirements met.
+        protected GeneDef FirstUnmetRequirementGene()
+        {
+            foreach (var g in selectedGenes)
+            {
+                if (!g.RequirementSatisfiedBy(selectedGenes))
+                {
+                    return g;
+                }
+            }
+            return null;
+        }
+
+        // "incapable of social" - the components this gene is declared to clash with, for a tooltip line.
+        protected string ConflictLabel(GeneDef geneDef)
+        {
+            var names = (geneDef as AndroidGeneDef)?.conflictsWith;
+            if (names == null || names.Count == 0)
+            {
+                return null;
+            }
+            return string.Join(", ", names.Select(n => DefDatabase<GeneDef>.GetNamedSilentFail(n)?.LabelCap.Resolve() ?? n));
+        }
+
+        // First selected component that clashes with another selected component, or null if none do.
+        protected GeneDef FirstConflictingGene()
+        {
+            foreach (var g in selectedGenes)
+            {
+                if (g.ConflictInSelection(selectedGenes) != null)
+                {
+                    return g;
+                }
+            }
+            return null;
+        }
+
         public Window_CreateAndroidBase(Action callback)
         {
             this.callback = callback;
@@ -403,6 +459,13 @@ namespace VREAndroids
                     flag = true;
                     if (DrawGene(geneDef, !adding, ref curX, curY, num2, containingRect, flag3))
                     {
+                        if (IsGeneLocked(geneDef))
+                        {
+                            // Fixed hardware (e.g. the android's built-in blood/power at the
+                            // behaviorist station): shown for reference but not changeable.
+                            SoundDefOf.ClickReject.PlayOneShotOnCamera();
+                            break;
+                        }
                         if (geneDef.IsBloodGene() && CanSwapBlood)
                         {
                             // Blood is mutually exclusive: switching to another type replaces the
@@ -418,6 +481,29 @@ namespace VREAndroids
                                 }
                                 OnGenesChanged();
                             }
+                            break;
+                        }
+                        if (geneDef.IsChassisGene() && CanSwapChassis)
+                        {
+                            // Chassis is mutually exclusive but optional: clicking the active one
+                            // removes it (leaving no chassis), clicking a different one replaces
+                            // whatever chassis was selected.
+                            if (selectedGenes.Contains(geneDef))
+                            {
+                                SoundDefOf.Tick_Low.PlayOneShotOnCamera();
+                                selectedGenes.Remove(geneDef);
+                            }
+                            else
+                            {
+                                SoundDefOf.Tick_High.PlayOneShotOnCamera();
+                                selectedGenes.RemoveAll(g => g.IsChassisGene());
+                                selectedGenes.Add(geneDef);
+                            }
+                            if (!xenotypeNameLocked)
+                            {
+                                xenotypeName = GetAndroidTypeName();
+                            }
+                            OnGenesChanged();
                             break;
                         }
                         if (geneDef.IsPowerGene() && CanSwapPower)
@@ -573,6 +659,35 @@ namespace VREAndroids
                 }
                 text += ("VREA.MessageComponentMissingPrerequisite".Translate(geneDef.label).CapitalizeFirst() + ": " + geneDef.prerequisite.LabelCap).Colorize(ColorLibrary.RedReadable);
             }
+            // "Requires: reactor powered" - shown for any component that depends on specific hardware,
+            // like the way Biotech sanguophage genes list their hemogenic requirement. Turns red when
+            // the required hardware is not part of the current selection.
+            string requiredLabel = RequiredHardwareLabel(geneDef);
+            if (requiredLabel != null)
+            {
+                if (!text.NullOrEmpty())
+                {
+                    text += "\n\n";
+                }
+                string requiresLine = "VREA.ComponentRequires".Translate(requiredLabel);
+                text += geneDef.RequirementSatisfiedBy(selectedGenes)
+                    ? requiresLine.Colorize(ColoredText.TipSectionTitleColor)
+                    : requiresLine.Colorize(ColorLibrary.RedReadable);
+            }
+            // "Conflicts with: incapable of social" - listed for any component that declares clashes,
+            // and turned red when a clashing component is actually part of the current selection.
+            string conflictLabel = ConflictLabel(geneDef);
+            if (conflictLabel != null)
+            {
+                if (!text.NullOrEmpty())
+                {
+                    text += "\n\n";
+                }
+                string conflictsLine = "VREA.ComponentConflictsWith".Translate(conflictLabel);
+                text += geneDef.ConflictInSelection(selectedGenes) == null
+                    ? conflictsLine.Colorize(ColoredText.TipSectionTitleColor)
+                    : conflictsLine.Colorize(ColorLibrary.RedReadable);
+            }
             if (!text.NullOrEmpty())
             {
                 text += "\n\n";
@@ -606,21 +721,32 @@ namespace VREAndroids
         public override void DoBottomButtons(Rect rect)
         {
             base.DoBottomButtons(rect);
+            string text = null;
             if (leftChosenGroups.Any())
             {
                 int num = leftChosenGroups.Sum((GeneLeftChosenGroup x) => x.overriddenGenes.Count);
                 GeneLeftChosenGroup geneLeftChosenGroup = leftChosenGroups[0];
-                string text = "VREA.ComponentsConflict".Translate() + ": " + "GenesConflictDesc".Translate(geneLeftChosenGroup.leftChosen.Named("FIRST"), geneLeftChosenGroup.overriddenGenes[0].Named("SECOND")).CapitalizeFirst() + ((num > 1) ? (" +" + (num - 1)) : string.Empty);
-                float x2 = Text.CalcSize(text).x;
-                GUI.color = ColorLibrary.RedReadable;
-                Text.Anchor = TextAnchor.MiddleLeft;
-                Widgets.Label(new Rect(rect.xMax - ButSize.x - x2 - 4f, rect.y, x2, rect.height), text);
-                Text.Anchor = TextAnchor.UpperLeft;
-                GUI.color = Color.white;
+                text = "VREA.ComponentsConflict".Translate() + ": " + "GenesConflictDesc".Translate(geneLeftChosenGroup.leftChosen.Named("FIRST"), geneLeftChosenGroup.overriddenGenes[0].Named("SECOND")).CapitalizeFirst() + ((num > 1) ? (" +" + (num - 1)) : string.Empty);
             }
-            else if (met < -20)
+            else
             {
-                string text = "VREA.TooLowEfficiency".Translate();
+                GeneDef conflicting = FirstConflictingGene();
+                GeneDef unmet = FirstUnmetRequirementGene();
+                if (conflicting != null)
+                {
+                    text = "VREA.ComponentsConflict".Translate() + ": " + conflicting.LabelCap + " / " + conflicting.ConflictInSelection(selectedGenes).LabelCap;
+                }
+                else if (unmet != null)
+                {
+                    text = "VREA.ComponentMissingRequirement".Translate(unmet.LabelCap, RequiredHardwareLabel(unmet));
+                }
+                else if (met < -20)
+                {
+                    text = "VREA.TooLowEfficiency".Translate();
+                }
+            }
+            if (text != null)
+            {
                 float x2 = Text.CalcSize(text).x;
                 GUI.color = ColorLibrary.RedReadable;
                 Text.Anchor = TextAnchor.MiddleLeft;
@@ -666,6 +792,19 @@ namespace VREAndroids
                 if (selectedGene.prerequisite != null && !selectedGenes.Contains(selectedGene.prerequisite))
                 {
                     Messages.Message("VREA.MessageComponentMissingPrerequisite".Translate(selectedGene.label).CapitalizeFirst() + ": " + selectedGene.prerequisite.LabelCap, null, MessageTypeDefOf.RejectInput, historical: false);
+                    return false;
+                }
+                if (!selectedGene.RequirementSatisfiedBy(selectedGenes))
+                {
+                    Messages.Message("VREA.ComponentMissingRequirement".Translate(selectedGene.LabelCap, RequiredHardwareLabel(selectedGene)),
+                        null, MessageTypeDefOf.RejectInput, historical: false);
+                    return false;
+                }
+                var conflict = selectedGene.ConflictInSelection(selectedGenes);
+                if (conflict != null)
+                {
+                    Messages.Message("VREA.ComponentsConflict".Translate() + ": " + selectedGene.LabelCap + " / " + conflict.LabelCap,
+                        null, MessageTypeDefOf.RejectInput, historical: false);
                     return false;
                 }
             }

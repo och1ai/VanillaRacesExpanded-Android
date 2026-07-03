@@ -177,8 +177,14 @@
 		<statFactors>
 			<Fertility>0</Fertility>
 		</statFactors>
+		<!-- Innate machine build: partial (50%) vacuum tolerance - full immunity needs the vacuumproof
+		     hardware - plus light mechanoid-style armour plating. Space is still cold enough to give an
+		     unprotected android component freezing. -->
 		<statOffsets>
-			<VacuumResistance MayRequire="Ludeon.RimWorld.Odyssey">1</VacuumResistance>
+			<VacuumResistance MayRequire="Ludeon.RimWorld.Odyssey">0.5</VacuumResistance>
+			<ArmorRating_Sharp>0.25</ArmorRating_Sharp>
+			<ArmorRating_Blunt>0.12</ArmorRating_Blunt>
+			<ArmorRating_Heat>0.25</ArmorRating_Heat>
 		</statOffsets>
 		<sterilize>true</sterilize>
 	</VREAndroids.AndroidGeneDef>
@@ -191,7 +197,7 @@
 		<defName>VREA_NeutroCirculation</defName>
 		<label>neutroamine blood</label>
 		<geneClass>VREAndroids.Gene_AndroidBlood</geneClass>
-		<description>An optional upgrade that replaces the android's blood with thick neutroamine running through its synthetic veins. It is the most power-efficient circulatory option and its reservoir can be topped up cheaply with neutroamine, but open wounds bleed precious blue neutroamine.</description>
+		<description>Replaces the android's blood with neutroamine: the most power-efficient circulatory option, topped up cheaply with neutroamine. Wounds bleed blue neutroamine, and if left unchecked the android can bleed out and die, though its subcore stays recoverable.</description>
 		<iconPath>UI/Icons/Genes/Hardware/Gene_NeutroCirculation</iconPath>
 		<displayOrderInCategory>11</displayOrderInCategory>
 		<biostatCpx>2</biostatCpx>
@@ -227,7 +233,7 @@
 		<defName>VREA_NormalBlood</defName>
 		<label>hemogenic</label>
 		<geneClass>VREAndroids.Gene_AndroidBlood</geneClass>
-		<description>The standard android circulatory system, running a synthetic blood substitute that behaves just like ordinary blood. Open wounds bleed red and the lost fluid regenerates over time on its own; a depleted reservoir can be topped up with hemogen packs, and blood can be transfused or extracted as normal.</description>
+		<description>An infiltrator-grade circulatory system used by glitterworld intelligence agencies, machine-persona networks and distant archotechs: it runs synthetic blood that behaves like the real thing, so the android bleeds red and passes for organic. Topped up with hemogen packs; if its wounds bleed out it can die like an organic, though its subcore stays recoverable.</description>
 		<iconPath>UI/Icons/Genes/Hardware/Gene_HemogenicBlood</iconPath>
 		<displayOrderInCategory>11</displayOrderInCategory>
 		<biostatCpx>1</biostatCpx>
@@ -309,7 +315,8 @@
 	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
 		<defName>VREA_ComponentOverheating</defName>
 		<label>component overheating</label>
-		<description>Androids do not suffer from heatstroke. Instead, being subjected to very high temperatures will increase the memory processing need, which can eventually lead to the complete loss of control over an android, as it gets locked in a constant reformatting state.</description>
+		<description>Androids do not suffer heatstroke. Instead, high temperatures scramble their working memory: while overheating, a memory need appears and steadily worsens, and if it bottoms out the android loses control, locked in a constant reformatting state until it cools down.</description>
+		<enablesNeeds><li>VREA_MemorySpace</li></enablesNeeds>
 		<iconPath>UI/Icons/Genes/Hardware/Gene_ComponentOverheating</iconPath>
 		<displayOrderInCategory>14</displayOrderInCategory>
 		<biostatCpx>1</biostatCpx>
@@ -324,6 +331,28 @@
 		<biostatCpx>1</biostatCpx>
 		<statOffsets>
 			<ComfyTemperatureMin>-30</ComfyTemperatureMin>
+		</statOffsets>
+	</VREAndroids.AndroidGeneDef>
+
+	<!-- Optional Odyssey-only hardware: takes the android from the baseline 50% up to full (100%)
+	     vacuum resistance and seals it against the cold of space, so it needs no spacesuit and never
+	     takes component freezing out there. Only loads with Odyssey (the VacuumResistance stat is
+	     Odyssey's), so it never errors when Odyssey is absent. -->
+	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase" MayRequire="Ludeon.RimWorld.Odyssey">
+		<defName>VREA_Vacuumproof</defName>
+		<label>spacer</label>
+		<description>This android's chassis is fully sealed against the void: hardened seals bring its vacuum resistance to 100%, and internal heat stores keep it running in the cold of space, so it needs no spacesuit and never suffers component freezing out there.</description>
+		<iconPath>UI/Icons/Genes/Gene_VacuumResistance</iconPath>
+		<displayOrderInCategory>24</displayOrderInCategory>
+		<biostatCpx>2</biostatCpx>
+		<biostatMet>-5</biostatMet>
+		<isCoreComponent>false</isCoreComponent>
+		<immuneToVacuumBurns>true</immuneToVacuumBurns>
+		<!-- +100% so the gene reads as total vacuum resistance like Odyssey's breathless gene; the
+		     stat caps at 1.0, so together with the baseline 50% it still lands at full resistance. -->
+		<statOffsets>
+			<VacuumResistance>1</VacuumResistance>
+			<ComfyTemperatureMin>-250</ComfyTemperatureMin>
 		</statOffsets>
 	</VREAndroids.AndroidGeneDef>
 
@@ -516,6 +545,9 @@
 		<exclusionTags>
 			<li>AndroidRAM</li>
 		</exclusionTags>
+		<requiresOneOf>
+			<li>VREA_MemoryRecharge</li>
+		</requiresOneOf>
 	</VREAndroids.AndroidGeneDef>
 
 	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
@@ -529,6 +561,9 @@
 		<exclusionTags>
 			<li>AndroidRAM</li>
 		</exclusionTags>
+		<requiresOneOf>
+			<li>VREA_MemoryRecharge</li>
+		</requiresOneOf>
 	</VREAndroids.AndroidGeneDef>
 
 	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
@@ -632,6 +667,9 @@
 		<exclusionTags>
 			<li>Waste</li>
 		</exclusionTags>
+		<requiresOneOf>
+			<li>VREA_ReactorPowered</li>
+		</requiresOneOf>
 	</VREAndroids.AndroidGeneDef>
 
 	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
@@ -645,6 +683,9 @@
 		<exclusionTags>
 			<li>Waste</li>
 		</exclusionTags>
+		<requiresOneOf>
+			<li>VREA_ReactorPowered</li>
+		</requiresOneOf>
 	</VREAndroids.AndroidGeneDef>
 
 	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
@@ -655,6 +696,9 @@
 		<displayOrderInCategory>17</displayOrderInCategory>
 		<biostatCpx>1</biostatCpx>
 		<biostatMet>-4</biostatMet>
+		<requiresOneOf>
+			<li>VREA_ReactorPowered</li>
+		</requiresOneOf>
 	</VREAndroids.AndroidGeneDef>
 
 	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
@@ -697,7 +741,10 @@
 		<iconPath>UI/Icons/Genes/Subroutines/Gene_NeutroSynthesis</iconPath>
 		<displayOrderInCategory>21</displayOrderInCategory>
 		<biostatCpx>1</biostatCpx>
-		<biostatMet>-8</biostatMet>
+		<biostatMet>-4</biostatMet>
+		<requiresOneOf>
+			<li>VREA_NeutroCirculation</li>
+		</requiresOneOf>
 	</VREAndroids.AndroidGeneDef>
 
 	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
@@ -745,34 +792,43 @@
 		<biostatMet>-2</biostatMet>
 	</VREAndroids.AndroidGeneDef>
 
-	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
+	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
 		<defName>VREA_Coagulation</defName>
 		<label>coagulation</label>
-		<description>Androids with this subroutine seal ruptures in their fluid lines almost instantly, drastically reducing how fast they bleed out from wounds.</description>
-		<iconPath>UI/Icons/Genes/Subroutines/Gene_NeutroSynthesis</iconPath>
+		<description>Androids with this hardware seal ruptures in their fluid lines almost instantly, drastically reducing how fast they bleed out from wounds.</description>
+		<iconPath>UI/Icons/Genes/Gene_Superclotting</iconPath>
 		<displayOrderInCategory>25</displayOrderInCategory>
 		<biostatCpx>1</biostatCpx>
 		<biostatMet>-3</biostatMet>
+		<isCoreComponent>false</isCoreComponent>
+		<requiresOneOf>
+			<li>VREA_NormalBlood</li>
+			<li>VREA_NeutroCirculation</li>
+		</requiresOneOf>
 	</VREAndroids.AndroidGeneDef>
 
-	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
+	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
 		<defName>VREA_ToughSubroutine</defName>
 		<label>reinforced chassis</label>
-		<description>Androids with this subroutine route extra power to their structural servos and plating, taking significantly less damage from all incoming attacks.</description>
-		<iconPath>UI/Icons/Genes/Hardware/Gene_SyntheticBody</iconPath>
-		<displayOrderInCategory>26</displayOrderInCategory>
+		<description>This android is built on a heavy reinforced frame: thick structural plating and hardened servos soak up punishment, so it takes significantly less damage from all incoming attacks. The extra mass draws more power to move.</description>
+		<iconPath>UI/Icons/Genes/Gene_Tough</iconPath>
+		<displayOrderInCategory>40</displayOrderInCategory>
 		<biostatCpx>2</biostatCpx>
-		<biostatMet>-5</biostatMet>
+		<biostatMet>-6</biostatMet>
+		<isCoreComponent>false</isCoreComponent>
 		<statFactors>
 			<IncomingDamageFactor>0.7</IncomingDamageFactor>
 		</statFactors>
+		<exclusionTags>
+			<li>AndroidChassis</li>
+		</exclusionTags>
 	</VREAndroids.AndroidGeneDef>
 
 	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
 		<defName>VREA_StrongMelee</defName>
 		<label>combat actuators</label>
 		<description>Androids with this subroutine drive their limbs with reinforced high-torque actuators, dealing significantly more damage in melee.</description>
-		<iconPath>UI/Icons/Genes/Subroutines/Gene_MeleeExpert</iconPath>
+		<iconPath>UI/Icons/Genes/Gene_StrongMeleeDamage</iconPath>
 		<displayOrderInCategory>27</displayOrderInCategory>
 		<biostatCpx>1</biostatCpx>
 		<biostatMet>-4</biostatMet>
@@ -781,14 +837,66 @@
 		</statFactors>
 	</VREAndroids.AndroidGeneDef>
 
-	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
+	<!-- Android-frame equivalents of Biotech's delicate / unstoppable genes, reusing the DLC icons.
+	     Delicate is the fragile counterpart of the reinforced chassis (mutually exclusive with it);
+	     unstoppable keeps the android from being staggered by hits. -->
+	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
+		<defName>VREA_Delicate</defName>
+		<label>delicate frame</label>
+		<description>This android is built on a lightweight frame of thin, minimal plating. It is cheap to run, but the flimsy chassis buckles under punishment, taking significantly more damage from all incoming attacks.</description>
+		<iconPath>UI/Icons/Genes/Gene_Delicate</iconPath>
+		<displayOrderInCategory>41</displayOrderInCategory>
+		<biostatCpx>1</biostatCpx>
+		<biostatMet>6</biostatMet>
+		<isCoreComponent>false</isCoreComponent>
+		<statFactors>
+			<IncomingDamageFactor>1.5</IncomingDamageFactor>
+		</statFactors>
+		<exclusionTags>
+			<li>AndroidChassis</li>
+		</exclusionTags>
+	</VREAndroids.AndroidGeneDef>
+
+	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
+		<defName>VREA_Unstoppable</defName>
+		<label>unstoppable</label>
+		<description>This android's servos shrug off the shock of incoming hits, so it is never staggered or slowed down when taking damage.</description>
+		<iconPath>UI/Icons/Genes/Gene_Unstoppable</iconPath>
+		<displayOrderInCategory>30</displayOrderInCategory>
+		<biostatCpx>1</biostatCpx>
+		<biostatMet>-3</biostatMet>
+		<isCoreComponent>false</isCoreComponent>
+		<statFactors>
+			<StaggerDurationFactor>0</StaggerDurationFactor>
+		</statFactors>
+	</VREAndroids.AndroidGeneDef>
+
+	<!-- Ideology-only subroutine: gives the android a real ideoligion (assigned at random for now)
+	     and lets it hold a role. Conflicts with psychology disabled (needs social capacity). Only
+	     loads with Ideology so it never errors when that DLC is absent. -->
+	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase" MayRequire="Ludeon.RimWorld.Ideology">
+		<defName>VREA_Ideological</defName>
+		<label>ideological</label>
+		<description>A belief-modelling subroutine that lets the android genuinely follow an ideoligion and take up a role such as leader or moral guide. Androids without it follow no ideoligion at all. Requires intact social capacity.</description>
+		<geneClass>VREAndroids.Gene_Ideological</geneClass>
+		<iconPath>UI/Structures/Structure_Ideological</iconPath>
+		<displayOrderInCategory>31</displayOrderInCategory>
+		<biostatCpx>2</biostatCpx>
+		<biostatMet>-3</biostatMet>
+		<conflictsWith>
+			<li>VREA_AptitudeIncapable_Social</li>
+		</conflictsWith>
+	</VREAndroids.AndroidGeneDef>
+
+	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
 		<defName>VREA_MemoryRecharge</defName>
 		<label>memory recharging</label>
-		<description>Androids with this subroutine continuously defragment and recharge their own memory, so under normal conditions they never need to reformat. Overheating still scrambles the drive: while an android is overheating its memory space drains and the memory need reappears, and if it empties the android reboots until it has cooled down and recharged.</description>
+		<description>Fits the android with active working memory. As on classic android designs, this gives it a memory need: its memory steadily fills during operation and must be periodically reformatted, or the android locks into a reformatting reboot until the drive is cleared. An android without this hardware keeps no working memory and never needs to reformat.</description>
 		<iconPath>UI/Icons/Genes/Hardware/Gene_MemoryProcessing</iconPath>
-		<displayOrderInCategory>28</displayOrderInCategory>
+		<displayOrderInCategory>23</displayOrderInCategory>
 		<biostatCpx>2</biostatCpx>
 		<biostatMet>10</biostatMet>
+		<isCoreComponent>false</isCoreComponent>
 		<enablesNeeds><li>VREA_MemorySpace</li></enablesNeeds>
 	</VREAndroids.AndroidGeneDef>
 

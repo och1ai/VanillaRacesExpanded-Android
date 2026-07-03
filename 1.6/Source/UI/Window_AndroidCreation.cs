@@ -22,9 +22,10 @@ namespace VREAndroids
         public override string Header => "VREA.CreateAndroid".Translate();
         public override string AcceptButtonLabel => "VREA.CreateAndroid".Translate();
 
-        // Blood type and power source can be chosen freely while building the body.
+        // Blood type, power source and chassis can be chosen freely while building the body.
         protected override bool CanSwapBlood => true;
         protected override bool CanSwapPower => true;
+        protected override bool CanSwapChassis => true;
         protected override void AcceptInner()
         {
             CustomXenotype customXenotype = new CustomXenotype();

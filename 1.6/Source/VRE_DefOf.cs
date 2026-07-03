@@ -61,6 +61,8 @@ namespace VREAndroids
         public static JobDef VREA_ModifyAndroid;
         public static EffecterDef VREA_ModifyingAndroidEffecter;
         public static GeneDef VREA_CombatIncapability;
+        [MayRequireIdeology]
+        public static GeneDef VREA_Ideological;
 
         [MayRequireIdeology]
         public static HistoryEventDef VRE_AndroidDied;

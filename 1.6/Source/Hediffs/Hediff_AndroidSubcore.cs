@@ -43,6 +43,16 @@ namespace VREAndroids
             {
                 GenPlace.TryPlaceThing(subcore, pos, map, placeMode);
             }
+            // The persona now lives in the popped subcore item, so the body left behind is an empty,
+            // identity-less husk: disown it from the colony so it no longer counts as a colonist (it
+            // drops off the colonist bar and the empty shell is not grieved for).
+            if (corePawn.Faction != null)
+            {
+                corePawn.SetFactionDirect(null);
+                // The colonist bar caches its entries; force a recache so the disowned husk drops off it
+                // instead of lingering (its name greys out but it otherwise stays until the next recache).
+                Find.ColonistBar?.MarkColonistsDirty();
+            }
             // Pulling the core tears the head off, spraying the android's blood (nothing if bloodless).
             Utils.BlowOffHeadForSubcore(corePawn);
             return subcore;

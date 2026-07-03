@@ -33,6 +33,14 @@ namespace VREAndroids
                         __result.Name = new NameSingle(nameTriple.First);
                     }
                 }
+                if (__result.IsAndroid())
+                {
+                    // Clear any duplicate genes (belt-and-suspenders against the old duplication bug),
+                    // then reconcile the ideoligion: androids only follow one if they carry the
+                    // ideological subroutine, otherwise they are left with none.
+                    Utils.RemoveDuplicateGenes(__result);
+                    Utils.SyncAndroidIdeo(__result);
+                }
             }
             PawnBioAndNameGenerator_GiveShuffledBioTo_Patch.xenotypeStatic = null;
         }

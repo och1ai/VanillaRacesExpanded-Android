@@ -234,8 +234,10 @@ namespace VREAndroids
             {
                 android.genes.AddGene(gene, true);
             }
+            Utils.RemoveDuplicateGenes(android);
             Utils.SyncBloodOrgans(android);
             Utils.SyncPowerCore(android);
+            Utils.SyncAndroidIdeo(android);
             if (android.HasSubcore(out var subcore))
             {
                 subcore.personaData.CopyFromPawn(android);
@@ -258,8 +260,10 @@ namespace VREAndroids
             }
             if (!persona.xenotypeName.NullOrEmpty()) android.genes.xenotypeName = persona.xenotypeName;
             if (persona.iconDef != null) android.genes.iconDef = persona.iconDef;
+            Utils.RemoveDuplicateGenes(android);
             Utils.SyncBloodOrgans(android);
             Utils.SyncPowerCore(android);
+            Utils.SyncAndroidIdeo(android);
             persona.OverwritePawn(android);
             if (android.HasSubcore(out var subcore))
             {
@@ -284,13 +288,11 @@ namespace VREAndroids
 
         private static void ClearAndroidGenes(Pawn android)
         {
-            foreach (var gene in Utils.allAndroidGenes)
+            // Remove all android genes the pawn has (every instance), iterating its own gene list so
+            // no accidental duplicate is left behind.
+            foreach (var gene in android.genes.GenesListForReading.Where(g => g.def.IsAndroidGene()).ToList())
             {
-                var existingGene = android.genes.GetGene(gene);
-                if (existingGene != null)
-                {
-                    android.genes.RemoveGene(existingGene);
-                }
+                android.genes.RemoveGene(gene);
             }
         }
 
