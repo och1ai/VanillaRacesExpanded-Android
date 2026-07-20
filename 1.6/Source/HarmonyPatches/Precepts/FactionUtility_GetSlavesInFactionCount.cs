@@ -12,18 +12,20 @@ namespace VREAndroids
         [HarmonyPriority(int.MinValue)]
         public static void Postfix(Faction faction, ref int __result)
         {
-            if (Faction.OfPlayerSilentFail?.ideos?.primaryIdeo?.HasPrecept(VREA_DefOf.VRE_Androids_Tools) == true)
+            var primaryIdeo = Faction.OfPlayerSilentFail?.ideos?.primaryIdeo;
+            if (primaryIdeo == null)
             {
-                int num = __result;
-                foreach (Pawn item in PawnsFinder.AllMaps_SpawnedPawnsInFaction(faction))
-                {
-                    if (item.IsAndroid()&&item.IsSlave)
-                    {
-                        num--;
-                    }
-                }
-                __result= num;
+                return;
             }
+            int num = __result;
+            foreach (Pawn item in PawnsFinder.AllMaps_SpawnedPawnsInFaction(faction))
+            {
+                if (item.IsSlave && Utils.IdeoTreatsAndroidAsTool(primaryIdeo, item))
+                {
+                    num--;
+                }
+            }
+            __result = num;
            
         }
     }

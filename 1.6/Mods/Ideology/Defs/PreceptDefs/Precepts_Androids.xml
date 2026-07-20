@@ -93,8 +93,44 @@
     </comps>
   </PreceptDef>
 
+  <PreceptDef>
+    <defName>VRE_Androids_RespectedOnlyAwakened</defName>
+    <issue>VRE_AndroidsIssue</issue>
+    <label>respected (awakened)</label>
+    <description>Only androids that have awakened to true sentience have earned respect and esteem. An ordinary, unawakened android is just a tool - a useful machine with no rights or moral standing.\n\n&lt;color=#E5E54C&gt;Gameplay effect:&lt;/color&gt;\n - Awakened androids are admired, like the "respected" precept.\n - Non-awakened androids are treated as tools (no opinion generation, no thoughts about them dying or being enslaved) and are shown with a blue "owned" tint.</description>
+    <impact>Medium</impact>
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>VRE_Androids_RespectedAwakened_Opinion</thought>
+        <description>Awakened android</description>
+      </li>
+    </comps>
+  </PreceptDef>
+
+  <!-- Awakened androids count as ordinary people (so, like "equal", no thoughts either way); everything
+       that has not awakened is just a tool. -->
+  <PreceptDef>
+    <defName>VRE_Androids_EqualOnlyAwakened</defName>
+    <issue>VRE_AndroidsIssue</issue>
+    <label>equals (awakened)</label>
+    <description>An android that has awakened to true sentience stands as our equal, with the same rights and moral consideration as anyone else. One that has not is simply a tool - a useful machine with no rights or standing.\n\n&lt;color=#E5E54C&gt;Gameplay effect:&lt;/color&gt;\n - Awakened androids are treated as ordinary people.\n - Non-awakened androids are treated as tools (no opinion generation, no thoughts about them dying or being enslaved) and are shown with a blue "owned" tint.</description>
+    <impact>Low</impact>
+  </PreceptDef>
+
   <!-- Thoughts -->
 
+  <ThoughtDef>
+    <defName>VRE_Androids_RespectedAwakened_Opinion</defName>
+    <thoughtClass>Thought_SituationalSocial</thoughtClass>
+    <workerClass>VREAndroids.ThoughtWorker_Precept_Android_Social_OnlyAwakened</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <stages>
+      <li>
+        <label>awakened android</label>
+        <baseOpinionOffset>20</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
 
   <ThoughtDef>
     <defName>VRE_Androids_Respected_Opinion</defName>

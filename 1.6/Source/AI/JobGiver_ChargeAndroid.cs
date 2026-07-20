@@ -46,21 +46,13 @@ namespace VREAndroids
         }
 
         // Like JobGiver_FreeMemorySpace.FindStandFor, but only powered stands can charge a battery
-        // from the grid.
+        // from the grid. Stands are free-for-all now: the first powered, reachable, unreserved one wins.
         public static Building_AndroidStand FindChargingStandFor(Pawn pawn)
         {
             foreach (var stand in Building_AndroidStand.stands)
             {
-                if (IsPoweredAndUsable(stand, pawn) && stand.CompAssignableToPawn.AssignedPawns.Contains(pawn))
+                if (IsPoweredAndUsable(stand, pawn))
                 {
-                    return stand;
-                }
-            }
-            foreach (var stand in Building_AndroidStand.stands)
-            {
-                if (IsPoweredAndUsable(stand, pawn) && stand.CompAssignableToPawn.AssignedPawns.Any() is false)
-                {
-                    stand.CompAssignableToPawn.TryAssignPawn(pawn);
                     return stand;
                 }
             }

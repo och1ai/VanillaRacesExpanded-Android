@@ -17,6 +17,16 @@
 			<li MayRequire="Neronix17.Outland.Genetics">Outland_HandsAndFeet</li>
 			<li MayRequire="Neronix17.Outland.Genetics">Outland_Voice</li>
 		</geneCategories>
+		<!-- Extra whole-body coverings from other mods that live outside the cosmetic categories above, so
+		     they are listed individually. Vanilla Furskin is handled instead by a patch that moves it into
+		     the Cosmetic category (FurskinCosmeticPatch.xml), so it is covered by <geneCategories> above. -->
+		<genes>
+			<li MayRequire="cyanobot.CyanobotsGenes">CYB_LightFur</li>
+			<li MayRequire="Neronix17.Outland.Genetics">Outland_Furbody</li>
+			<li MayRequire="Neronix17.Outland.Genetics">Outland_BumFluff</li>
+			<li MayRequire="Neronix17.Outland.Genetics">Outland_RidgedSkin</li>
+			<li MayRequire="Neronix17.Outland.Genetics">Outland_PrimateSkin</li>
+		</genes>
 	</VREAndroids.AndroidConvertableGenesDef>
 
 </Defs>

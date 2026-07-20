@@ -64,7 +64,9 @@ namespace VREAndroids
 
         public override bool ShouldShowAssignmentGizmo()
         {
-            return parent.Faction == Faction.OfPlayer;
+            // The stand is a free-for-all charger now, not an owned bed: no "assign owner" gizmo.
+            // Any android may walk up and use any stand (the neutro casket is the only real bed).
+            return false;
         }
     }
 }

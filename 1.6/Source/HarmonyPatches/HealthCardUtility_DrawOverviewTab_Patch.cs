@@ -33,6 +33,8 @@ namespace VREAndroids
             Widgets.Label(rect, str.CapitalizeFirst());
             GUI.color = Color.white;
             curY += 34f;
+            // (The delayed-shutdown countdown is drawn in the pawn's inspect pane, just above the android
+            // energy readout - see Pawn_GetInspectString_Patch - rather than crowding the overview tab.)
             if (pawn.IsColonist && !pawn.Dead)
             {
                 bool selfTend = pawn.playerSettings.selfTend;

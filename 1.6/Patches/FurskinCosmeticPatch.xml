@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+	<!-- Furskin ships under the "Miscellaneous" gene category. Move it into "Cosmetic" so it is treated as
+	     the whole-body covering it is - and so its android counterpart is generated (the android convertable
+	     list already includes the Cosmetic category). -->
+	<Operation Class="PatchOperationReplace" MayRequire="Ludeon.RimWorld.Biotech">
+		<xpath>Defs/GeneDef[defName="Furskin"]/displayCategory</xpath>
+		<value>
+			<displayCategory>Cosmetic</displayCategory>
+		</value>
+	</Operation>
+
+</Patch>

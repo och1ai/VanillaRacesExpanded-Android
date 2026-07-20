@@ -56,8 +56,11 @@
 				<fuelLabel>Neutroamine</fuelLabel>
 				<fuelGizmoLabel>Neutroamine</fuelGizmoLabel>
 				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
-				<targetFuelLevelConfigurable>false</targetFuelLevelConfigurable>
-				<fuelCapacity>100.0</fuelCapacity>
+				<!-- Like a shuttle's fuel: the player sets how much neutroamine to keep loaded. Holds up
+				     to 120 (three full android top-ups at 40 each); defaults to a single reservoir. -->
+				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
+				<initialConfigurableTargetFuelLevel>40</initialConfigurableTargetFuelLevel>
+				<fuelCapacity>120.0</fuelCapacity>
 				<fuelFilter>
 					<thingDefs>
 						<li>Neutroamine</li>

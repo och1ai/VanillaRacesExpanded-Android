@@ -29,6 +29,12 @@ namespace VREAndroids
             base.TickInterval(delta);
             if (pawn.IsHashIntervalTick(AndroidReactorTickRate, delta))
             {
+                // Sleeping under mechanitor oversight (dormant self-charge, or "recharge" - a reactor has
+                // nothing to plug into): the reactor idles without spending any charge.
+                if (MechOversightUtil.IsDormantForPower(pawn))
+                {
+                    return;
+                }
                 // A reactor lasts ~2 years of operation at baseline efficiency (drain factor 1.0).
                 var baseDrainSpeed = (1f / (GenDate.TicksPerYear * 2f)) * PowerEfficiencyDrainMultiplier;
                 baseDrainSpeed *= AndroidReactorTickRate;

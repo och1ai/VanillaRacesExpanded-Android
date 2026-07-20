@@ -173,4 +173,31 @@ namespace VREAndroids
             return toil;
         }
     }
+
+    // A crafter walks to the paused assembler and works briefly to complete the current assembly cycle,
+    // letting the next one begin.
+    public class JobDriver_CompleteAndroidCycle : JobDriver
+    {
+        private const int WorkTicks = 600;
+        private Building_AndroidCreationStation Station => TargetA.Thing as Building_AndroidCreationStation;
+
+        public override bool TryMakePreToilReservations(bool errorOnFailed)
+            => pawn.Reserve(job.GetTarget(TargetIndex.A), job, 1, -1, null, errorOnFailed);
+
+        public override IEnumerable<Toil> MakeNewToils()
+        {
+            this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
+            this.FailOnBurningImmobile(TargetIndex.A);
+            this.FailOn(() => Station == null || !Station.awaitingCycleCompletion);
+            yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.InteractionCell);
+            Toil work = Toils_General.Wait(WorkTicks, TargetIndex.A);
+            work.WithProgressBarToilDelay(TargetIndex.A);
+            work.FailOnCannotTouch(TargetIndex.A, PathEndMode.InteractionCell);
+            yield return work;
+            Toil finish = ToilMaker.MakeToil();
+            finish.initAction = delegate { Station?.CompleteCycle(pawn); };
+            finish.defaultCompleteMode = ToilCompleteMode.Instant;
+            yield return finish;
+        }
+    }
 }

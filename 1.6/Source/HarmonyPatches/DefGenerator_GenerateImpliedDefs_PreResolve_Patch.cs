@@ -46,6 +46,32 @@ namespace VREAndroids
                     }
                 }
             }
+            // The "extract neutroamine" surgery, gated by AvailableOnNow to neutroamine-blood androids -
+            // same recipeUsers coverage (every humanlike) as the administer-neutroamine recipe.
+            DefGenerator.AddImpliedDef(GetExtractNeutroamineRecipe(humanlikes));
+        }
+
+        public static RecipeDef GetExtractNeutroamineRecipe(List<ThingDef> recipeUsers)
+        {
+            return new RecipeDef
+            {
+                defName = "VREA_ExtractNeutroamine",
+                label = "VREA.ExtractNeutroamine".Translate(),
+                description = "VREA.ExtractNeutroamineDesc".Translate(),
+                jobString = "VREA.ExtractingNeutroamine".Translate(),
+                workerClass = typeof(Recipe_ExtractNeutroamine),
+                workAmount = 500,
+                targetsBodyPart = false,
+                anesthetize = false,
+                hideBodyPartNames = true,
+                surgerySuccessChanceFactor = 99999f,
+                uiIconThing = VREA_DefOf.Neutroamine,
+                recipeUsers = recipeUsers.ToList(),
+                workSkill = SkillDefOf.Crafting,
+                workSkillLearnFactor = 2f,
+                effectWorking = VREA_DefOf.ButcherMechanoid,
+                soundWorking = VREA_DefOf.Recipe_Machining,
+            };
         }
 
         public static ThingDef GetAndroidPartThing(BodyPartDef bodyPartDef)

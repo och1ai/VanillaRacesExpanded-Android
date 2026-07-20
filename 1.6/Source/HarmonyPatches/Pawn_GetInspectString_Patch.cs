@@ -1,4 +1,5 @@
 using HarmonyLib;
+using RimWorld;
 using Verse;
 
 namespace VREAndroids
@@ -13,6 +14,14 @@ namespace VREAndroids
             if (__instance.IsAndroid() is false)
             {
                 return;
+            }
+            // Delayed-shutdown reserve: a red countdown sitting directly above the energy readout.
+            if (__instance.genes?.GetGene(VREA_DefOf.VREA_DelayedDeactivation) is Gene_DelayedDeactivation reserve
+                && reserve.CountingDown)
+            {
+                string warning = "VREA.DeactivatingIn".Translate(reserve.TicksLeft.ToStringTicksToPeriod())
+                    .CapitalizeFirst().Colorize(ColorLibrary.RedReadable);
+                __result = __result.NullOrEmpty() ? warning : __result + "\n" + warning;
             }
             var core = __instance.GetPowerCore();
             var need = __instance.needs?.TryGetNeed<Need_ReactorPower>();

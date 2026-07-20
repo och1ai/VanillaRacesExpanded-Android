@@ -13,6 +13,13 @@ namespace VREAndroids
         {
             if (___pawn.IsAndroid())
             {
+                // The sleep-cycle subroutine gives the android a real Rest need, overriding the usual
+                // "androids never rest" exclusion below.
+                if (nd == NeedDefOf.Rest && ___pawn.HasActiveGene(VREA_DefOf.VREA_SleepNeed))
+                {
+                    __result = true;
+                    return;
+                }
                 if (VREA_DefOf.VREA_AndroidSettings.excludedNeedsForAndroids.Contains(nd.defName))
                 {
                     __result = false;

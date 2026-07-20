@@ -81,6 +81,20 @@
 	</WorkGiverDef>
 
 	<WorkGiverDef>
+		<defName>VREA_CompleteAndroidCycle</defName>
+		<label>completing android assembly cycle</label>
+		<giverClass>VREAndroids.WorkGiver_CompleteAndroidCycle</giverClass>
+		<workType>Crafting</workType>
+		<priorityInType>110</priorityInType>
+		<verb>complete an assembly cycle at</verb>
+		<gerund>completing an assembly cycle at</gerund>
+		<requiredCapacities>
+			<li>Manipulation</li>
+		</requiredCapacities>
+		<prioritizeSustains>true</prioritizeSustains>
+	</WorkGiverDef>
+
+	<WorkGiverDef>
 		<defName>VREA_ModifyAndroid</defName>
 		<label>modifying android at station</label>
 		<giverClass>VREAndroids.WorkGiver_ModifyAndroid</giverClass>

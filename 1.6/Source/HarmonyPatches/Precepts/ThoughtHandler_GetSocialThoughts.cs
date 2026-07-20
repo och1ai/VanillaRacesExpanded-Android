@@ -15,8 +15,8 @@ namespace VREAndroids
         [HarmonyPriority(int.MaxValue)]
         public static bool Prefix(Pawn otherPawn, List<ISocialThought> outThoughts, ThoughtHandler __instance)
         {
-            if (!__instance.pawn.IsAndroid() && (__instance.pawn.Ideo?.HasPrecept(VREA_DefOf.VRE_Androids_Tools)==true&&otherPawn.IsAndroid()))
-            {          
+            if (!__instance.pawn.IsAndroid() && Utils.IdeoTreatsAndroidAsTool(__instance.pawn.Ideo, otherPawn))
+            {
                 return false;
             }
             return true;

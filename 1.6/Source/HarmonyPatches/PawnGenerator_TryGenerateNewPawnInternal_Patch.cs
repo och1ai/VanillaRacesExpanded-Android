@@ -39,6 +39,17 @@ namespace VREAndroids
                     // then reconcile the ideoligion: androids only follow one if they carry the
                     // ideological subroutine, otherwise they are left with none.
                     Utils.RemoveDuplicateGenes(__result);
+                    // Guarantee the power core exists (its part can be missing when the power gene's PostAdd
+                    // ran mid-generation), then re-evaluate downed state. Without a core an android is flagged
+                    // ShouldBeDowned and the generator's downed check rejects it - this is what stopped basic
+                    // and awakened androids from spawning at all via dev-mode / faction generation.
+                    Utils.SyncPowerCore(__result);
+                    var core = __result.GetPowerCore();
+                    if (core != null)
+                    {
+                        core.Energy = 1f;
+                    }
+                    __result.health?.CheckForStateChange(null, null);
                     Utils.SyncAndroidIdeo(__result);
                 }
             }

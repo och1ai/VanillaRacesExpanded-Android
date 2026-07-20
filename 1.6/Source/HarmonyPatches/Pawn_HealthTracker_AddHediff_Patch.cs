@@ -36,7 +36,18 @@ namespace VREAndroids
                 }
             }
 
-            if (___pawn.HasActiveGene(VREA_DefOf.VREA_SyntheticImmunity) && Utils.AndroidCanCatch(hediff.def) is false)
+            // Golden cube obsession: a non-awakened android's subcore has no desire to worship or hoard.
+            // Awakened androids feel the pull like anyone else, so they are NOT immune.
+            if ((hediff.def == HediffDefOf.CubeInterest || hediff.def == HediffDefOf.CubeWithdrawal
+                || hediff.def == HediffDefOf.CubeComa) && !___pawn.IsAwakened())
+            {
+                return false;
+            }
+            // An awakened android is as psychically sensitive as an organic, so it may receive a psylink
+            // even though the blanket android blocklist rejects the psychic amplifier.
+            bool awakenedPsylink = hediff.def == HediffDefOf.PsychicAmplifier && ___pawn.IsAwakened();
+            if (!awakenedPsylink && ___pawn.HasActiveGene(VREA_DefOf.VREA_SyntheticImmunity)
+                && Utils.AndroidCanCatch(hediff.def) is false)
             {
                 return false;
             }

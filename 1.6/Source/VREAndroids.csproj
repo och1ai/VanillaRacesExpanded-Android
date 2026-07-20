@@ -86,6 +86,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI\JobDriver_RefuelWithNeutroamine.cs" />
+    <Compile Include="AI\JobGiver_AndroidDormant.cs" />
+    <Compile Include="AI\ThinkNode_ConditionalAndroidWorkMode.cs" />
     <Compile Include="AI\JobDriver_RepairAndroid.cs" />
     <Compile Include="AI\JobDriver_ReplaceReactor.cs" />
     <Compile Include="AI\JobDriver_ModifyAndroid.cs" />
@@ -110,6 +112,9 @@
     <Compile Include="FloatMenuOptionProviders\FloatMenuOptionProvider_RefuelWithNeutroamine.cs" />
     <Compile Include="FloatMenuOptionProviders\FloatMenuOptionProvider_RepairAndroid.cs" />
     <Compile Include="Genes\Gene_AndroidBlood.cs" />
+    <Compile Include="Genes\Gene_DelayedDeactivation.cs" />
+    <Compile Include="Genes\Gene_MechOversight.cs" />
+    <Compile Include="Genes\MentalState_AwaitingOverseer.cs" />
     <Compile Include="Genes\Gene_Ideological.cs" />
     <Compile Include="BloodOrgansExtension.cs" />
     <Compile Include="GameComponent_AndroidBloodOrgans.cs" />
@@ -120,6 +125,11 @@
     <Compile Include="HarmonyPatches\Anomaly\IncidentWorker_UnnaturalCorpseArrival_ValidatePawn_Patch.cs" />
     <Compile Include="HarmonyPatches\Anomaly\MetalhorrorUtility_CanBeInfected_Patch.cs" />
     <Compile Include="HarmonyPatches\Anomaly\MutantUtility_CanResurrectAsShambler_Patch.cs" />
+    <Compile Include="HarmonyPatches\Anomaly\Obelisk_Patches.cs" />
+    <Compile Include="HarmonyPatches\Anomaly\Occultist_Patches.cs" />
+    <Compile Include="HarmonyPatches\MechanitorControlGroupGizmo_AssignedMechs_Patch.cs" />
+    <Compile Include="HarmonyPatches\Alert_UncontrolledAndroids.cs" />
+    <Compile Include="HarmonyPatches\MechOversight_Patches.cs" />
     <Compile Include="HarmonyPatches\Anomaly\QuestNode_Root_MysteriousCargo_ValidatePawn_Patch.cs" />
     <Compile Include="HarmonyPatches\Building_Bed_GetFloatMenuOptions_Patch.cs" />
     <Compile Include="CachedResult.cs" />
@@ -281,6 +291,9 @@
     <Compile Include="HarmonyPatches\Precepts\GenGuest_EnslavePrisoner.cs" />
     <Compile Include="HarmonyPatches\Precepts\TaleUtility_Notify_PawnDied.cs" />
     <Compile Include="HarmonyPatches\Precepts\PawnDiedOrDownedThoughtsUtility_AppendThoughts_ForHumanlike.cs" />
+    <Compile Include="HarmonyPatches\Precepts\ColonistBarColonistDrawer_DrawIcons_Patch.cs" />
+    <Compile Include="HarmonyPatches\Precepts\PawnNameColorUtility_PawnNameColorOf_Patch.cs" />
+    <Compile Include="HarmonyPatches\Precepts\RitualObligation_AndroidFuneral_Patches.cs" />
     <Compile Include="HarmonyPatches\Precepts\ThoughtHandler_GetSocialThoughts.cs" />
     <Compile Include="Recipes\Recipe_InstallAndroidPart.cs" />
     <Compile Include="ScenParts\ScenPart_NewAndroidArrival.cs" />
@@ -290,6 +303,7 @@
     <Compile Include="ThoughtWorkers\ThoughtWorker_Precept_AndroidPresent.cs" />
     <Compile Include="ThoughtWorkers\ThoughtWorker_Precept_AndroidsInColony.cs" />
     <Compile Include="ThoughtWorkers\ThoughtWorker_Precept_Android_Social.cs" />
+    <Compile Include="ThoughtWorkers\ThoughtWorker_Precept_Android_Social_OnlyAwakened.cs" />
     <Compile Include="UI\ChoiceLetter_AndroidAwakened.cs" />
     <Compile Include="UI\Dialog_AndroidAwakenedChoices.cs" />
     <Compile Include="Utilities\AndroidProjectUtils.cs" />
@@ -303,6 +317,8 @@
     <Compile Include="UI\Dialog_AndroidProjectList_Load.cs" />
     <Compile Include="UI\Dialog_AndroidProjectList_Save.cs" />
     <Compile Include="UI\Window_AndroidCreation.cs" />
+    <Compile Include="UI\Window_AndroidDesign.cs" />
+    <Compile Include="UI\VREA_UIHelper.cs" />
     <Compile Include="AI\WorkGiver_CreateAndroid.cs" />
     <Compile Include="HarmonyPatches\Building_SubcoreScanner_CanAcceptPawn_Patch.cs" />
     <Compile Include="AI\WorkGiver_HaulToSubcorePolyanalyzer.cs" />
@@ -329,6 +345,7 @@
     <Compile Include="HarmonyPatches\InspectTabBase_UpdateSize_Patch.cs" />
     <Compile Include="HarmonyPatches\CompAbilityEffect_Convert_Valid_Patch.cs" />
     <Compile Include="HarmonyPatches\Pawn_Kill_Patch.cs" />
+    <Compile Include="HarmonyPatches\PawnUtility_ShouldSendNotificationAbout_Patch.cs" />
     <Compile Include="HarmonyPatches\Pawn_RelationsTracker_Notify_PawnKilled_Patch.cs" />
     <Compile Include="HarmonyPatches\GeneUtility_GenesInOrder_Patch.cs" />
     <Compile Include="HarmonyPatches\HealthAIUtility_ShouldBeTendedNowByPlayer_Patch.cs" />

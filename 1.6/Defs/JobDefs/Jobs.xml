@@ -29,6 +29,13 @@
     <reportString>Modifying android at TargetA.</reportString>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
   </JobDef>
+
+  <JobDef>
+    <defName>VREA_CompleteAndroidCycle</defName>
+    <driverClass>VREAndroids.JobDriver_CompleteAndroidCycle</driverClass>
+    <reportString>completing assembly cycle at TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
   
   <JobDef>
     <defName>VREA_ReplaceReactor</defName>

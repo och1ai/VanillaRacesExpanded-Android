@@ -14,15 +14,15 @@ namespace VREAndroids
         public List<Thing> resources;
         public Building_AndroidCreationStation station;
 
-        // During a resurrection the dead body itself is shown on the printer instead of this placeholder.
+        // Once the android body exists - the corpse being resurrected, or the body assembled from the
+        // second cycle onward - it is shown on the machine instead of this placeholder shell.
         public override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
-            Corpse corpse = station?.HeldCorpse;
-            if (corpse?.InnerPawn != null)
+            Pawn pawn = station?.PawnBeingAssembled;
+            if (pawn != null)
             {
                 try
                 {
-                    Pawn pawn = corpse.InnerPawn;
                     pawn.Rotation = Rot4.South;
                     PawnUtility_GetPosture_Patch.forceStandingPawn = pawn;
                     pawn.DynamicDrawPhaseAt(DrawPhase.EnsureInitialized, drawLoc, flip);

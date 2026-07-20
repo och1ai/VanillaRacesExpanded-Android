@@ -162,10 +162,13 @@ Persona subcores created by this device can only be used to create complex, huma
 
   <ThingDef ParentName="BuildingBase">
     <defName>VREA_AndroidCreationStation</defName>
-    <label>android printer</label>
+    <label>android assembler</label>
     <description>An advanced 3D printer for fabricating humanoids layer by layer, of the kind used by ultratech societies - or by archotech-sent ambassadors seeded to infiltrate and study distant human cultures. It can print new androids, resurrect a dead one, or reprint a body from a recovered subcore. Once a colonist has loaded the required materials, the printer builds the android on its own over time, drawing power throughout - no further manual labour is needed. An android's appearance, hardware and subroutines are set when the print is queued.</description>
 	<tickerType>Normal</tickerType>
     <thingClass>VREAndroids.Building_AndroidCreationStation</thingClass>
+    <inspectorTabs>
+      <li>VREAndroids.ITab_AndroidBills</li>
+    </inspectorTabs>
     <canOverlapZones>true</canOverlapZones>
     <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
     <thingCategories>
@@ -219,15 +222,7 @@ Persona subcores created by this device can only be used to create complex, huma
         <basePowerConsumption>350</basePowerConsumption>
       </li>
       <li Class="CompProperties_Flickable"/>
-      <li Class="CompProperties_AffectedByFacilities">
-        <linkableFacilities>
-          <li>ToolCabinet</li>
-        </linkableFacilities>
-      </li>
     </comps>
-    <placeWorkers>
-      <li>PlaceWorker_ShowFacilitiesConnections</li>
-    </placeWorkers>
     <researchPrerequisites>
       <li>VREA_AndroidTech</li>
     </researchPrerequisites>

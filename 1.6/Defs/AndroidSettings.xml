@@ -21,6 +21,7 @@
 		<androidSpecificMentalBreaks>
 			<li>VREA_Reformatting</li>
 			<li>VREA_SolarFlared</li>
+			<li>VREA_AwaitingOverseer</li>
 		</androidSpecificMentalBreaks>
 		<androidsShouldNotReceiveHediffs>
 			<li>Scaria</li>

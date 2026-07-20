@@ -29,9 +29,10 @@ namespace VREAndroids
             {
                 return;
             }
-            if (Severity >= 1f)
+            // Out of power / downed, or deliberately parked in a dormant low-power work mode by its
+            // mechanitor: trickle-charge slowly on its own instead of draining.
+            if (Severity >= 1f || MechOversightUtil.IsDormantForPower(pawn))
             {
-                // Out of power / downed: trickle-charge slowly on its own.
                 Energy = Mathf.Min(1f, Energy + (SlowRechargePerDay / GenDate.TicksPerDay) * BatteryTickRate);
             }
             else

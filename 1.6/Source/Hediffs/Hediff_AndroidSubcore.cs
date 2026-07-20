@@ -12,6 +12,10 @@ namespace VREAndroids
 
         public override bool ShouldRemove => false;
 
+        // The subcore is armoured and never shown in the health list - lore-wise it is a shielded core
+        // (a Westworld host's brain), not a wound or implant the player manages.
+        public override bool Visible => false;
+
         public override void Notify_PawnDied(DamageInfo? dinfo, Hediff culprit = null)
         {
             personaData.CopyFromPawn(pawn);

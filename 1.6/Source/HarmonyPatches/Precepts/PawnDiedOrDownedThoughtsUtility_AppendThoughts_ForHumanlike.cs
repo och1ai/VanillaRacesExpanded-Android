@@ -13,8 +13,8 @@ namespace VREAndroids
         public static bool Prefix(Pawn victim, DamageInfo? dinfo)
         {
             
-            if (Faction.OfPlayerSilentFail?.ideos?.primaryIdeo?.HasPrecept(VREA_DefOf.VRE_Androids_Tools)==true && victim.IsAndroid())
-            {          
+            if (Utils.IdeoTreatsAndroidAsTool(Faction.OfPlayerSilentFail?.ideos?.primaryIdeo, victim))
+            {
                 return false;
             }
             return true;

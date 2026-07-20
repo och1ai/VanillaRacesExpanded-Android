@@ -22,8 +22,11 @@ To create such a sophisticated subcore, the composite patterns from multiple min
     <description>An unfinished android.</description>
 	<thingClass>VREAndroids.UnfinishedAndroid</thingClass>
     <!-- The android-in-progress must never be hauled off the printer, and does not deteriorate while
-         it prints (even outdoors, unroofed). Drawn every frame so a resurrecting body can be rendered. -->
+         it prints (even outdoors, unroofed). Drawn every frame so a resurrecting body can be rendered.
+         Not selectable: clicking the assembler's contents should select nothing (the assembler itself
+         carries the cancel/inspect UI). -->
     <alwaysHaulable>false</alwaysHaulable>
+    <selectable>false</selectable>
     <drawerType>RealtimeOnly</drawerType>
     <statBases>
       <Flammability>0.6</Flammability>

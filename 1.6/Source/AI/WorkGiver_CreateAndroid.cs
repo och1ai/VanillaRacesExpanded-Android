@@ -69,4 +69,27 @@ namespace VREAndroids
             return true;
         }
     }
+
+    // Sends a crafter to complete an assembly cycle once the assembler pauses at a cycle boundary. Only the
+    // last cycle finishes on its own; each earlier cycle waits for a crafter here before the next begins.
+    [HotSwappable]
+    public class WorkGiver_CompleteAndroidCycle : WorkGiver_Scanner
+    {
+        public override PathEndMode PathEndMode => PathEndMode.InteractionCell;
+        public override ThingRequest PotentialWorkThingRequest => ThingRequest.ForDef(VREA_DefOf.VREA_AndroidCreationStation);
+        public override Danger MaxPathDanger(Pawn pawn) => Danger.Some;
+
+        public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
+        {
+            return t is Building_AndroidCreationStation station && station.awaitingCycleCompletion
+                && (station.compPower == null || station.compPower.PowerOn)
+                && !t.IsBurning()
+                && pawn.CanReserveAndReach(t, PathEndMode.InteractionCell, MaxPathDanger(pawn), 1, -1, null, forced);
+        }
+
+        public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
+        {
+            return HasJobOnThing(pawn, t, forced) ? JobMaker.MakeJob(VREA_DefOf.VREA_CompleteAndroidCycle, t) : null;
+        }
+    }
 }

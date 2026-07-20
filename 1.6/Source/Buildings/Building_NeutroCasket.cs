@@ -7,6 +7,11 @@ namespace VREAndroids
     [HotSwappable]
     public class Building_NeutroCasket : Building_Bed
     {
+        // Neutro loss healed per unit of neutroamine burned, derived from the reservoir size so the casket
+        // always charges the same as the refill recipe (a full top-up = NeutroaminePerFullReservoir).
+        public const float SeverityPerNeutroamine =
+            1f / Recipe_AdministerNeutroamineForAndroid.NeutroaminePerFullReservoir;
+
         public CompRefuelable compRefuelable;
         public CompPowerTrader compPower;
         private void Initialize()
@@ -56,7 +61,10 @@ namespace VREAndroids
                     {
                         if (compRefuelable.fuel >= 1)
                         {
-                            HealthUtility.AdjustSeverity(occupant, VREA_DefOf.VREA_NeutroLoss, -0.01f);
+                            // One unit of neutroamine restores the same share of the reservoir the refill
+                            // recipe assumes, so a full top-up costs NeutroaminePerFullReservoir either
+                            // way. (This used to be a flat 0.01 - i.e. the old 100-per-reservoir rate.)
+                            HealthUtility.AdjustSeverity(occupant, VREA_DefOf.VREA_NeutroLoss, -SeverityPerNeutroamine);
                             compRefuelable.ConsumeFuel(1f);
                         }
                     }

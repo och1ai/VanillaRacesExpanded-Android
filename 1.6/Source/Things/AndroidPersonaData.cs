@@ -48,6 +48,8 @@ namespace VREAndroids
         public HeadTypeDef headType;
         public HairDef hairDef;
         public BeardDef beard;
+        public TattooDef bodyTattoo;
+        public TattooDef faceTattoo;
         public Color hairColor = Color.white;
         public Color? skinColorOverride;
         public List<Trait> traits = new List<Trait>();
@@ -59,6 +61,9 @@ namespace VREAndroids
         // The (now dead) pawn this persona was taken from, kept so that destroying an extracted subcore
         // can still make its friends and lovers grieve.
         public Pawn sourcePawn;
+
+        // Biological age chosen in the designer / carried by the original; reapplied to the printed body.
+        public long biologicalAgeTicks;
 
         // Full persona (mirrors what a cortical stack preserves).
         public List<Thought_Memory> memories = new List<Thought_Memory>();
@@ -121,6 +126,7 @@ namespace VREAndroids
             gender = pawn.gender;
             faction = pawn.Faction;
             sourcePawn = pawn;
+            biologicalAgeTicks = pawn.ageTracker?.AgeBiologicalTicks ?? 0;
             if (pawn.story != null)
             {
                 childhood = pawn.story.Childhood;
@@ -131,6 +137,8 @@ namespace VREAndroids
                 hairColor = pawn.story.HairColor;
                 skinColorOverride = pawn.story.skinColorOverride;
                 beard = pawn.style?.beardDef;
+                bodyTattoo = pawn.style?.BodyTattoo;
+                faceTattoo = pawn.style?.FaceTattoo;
                 traits = pawn.story.traits?.allTraits
                     .Where(t => t.sourceGene == null && t.suppressedByGene == null)
                     .Select(t => new Trait(t.def, t.Degree, t.ScenForced))
@@ -139,9 +147,15 @@ namespace VREAndroids
             skills = pawn.skills?.skills.Select(s => new StoredSkill(s)).ToList() ?? new List<StoredSkill>();
             if (pawn.genes != null)
             {
+                // Capture the component genes plus the appearance genes (skin/hair colour, melanin, body
+                // shape). The colour genes are clones of vanilla genes, not AndroidGeneDefs, so a plain
+                // "is AndroidGeneDef" check would drop them and a reprint would lose the android's colours.
                 androidGenes = pawn.genes.GenesListForReading
-                    .Where(g => g.def is AndroidGeneDef)
+                    .Where(g => g.def is AndroidGeneDef || g.def.IsAndroidGene()
+                        || Utils.IsSkinColorGene(g.def) || Utils.IsHairColorGene(g.def)
+                        || g.def.bodyType != null || g.def.endogeneCategory == EndogeneCategory.Melanin)
                     .Select(g => g.def)
+                    .Distinct()
                     .ToList();
                 xenotypeName = pawn.genes.xenotypeName;
                 iconDef = pawn.genes.iconDef;
@@ -209,6 +223,11 @@ namespace VREAndroids
                 if (pawn.style != null)
                 {
                     pawn.style.beardDef = beard ?? BeardDefOf.NoBeard;
+                    if (ModsConfig.IdeologyActive)
+                    {
+                        pawn.style.BodyTattoo = bodyTattoo ?? TattooDefOf.NoTattoo_Body;
+                        pawn.style.FaceTattoo = faceTattoo ?? TattooDefOf.NoTattoo_Face;
+                    }
                 }
                 if (pawn.story.traits != null)
                 {
@@ -240,6 +259,10 @@ namespace VREAndroids
                         record.passion = stored.passion;
                     }
                 }
+            }
+            if (biologicalAgeTicks > 0 && pawn.ageTracker != null)
+            {
+                pawn.ageTracker.AgeBiologicalTicks = biologicalAgeTicks;
             }
             RestoreMemories(pawn);
             RestoreRelations(pawn);
@@ -335,6 +358,8 @@ namespace VREAndroids
             Scribe_Defs.Look(ref headType, "headType");
             Scribe_Defs.Look(ref hairDef, "hairDef");
             Scribe_Defs.Look(ref beard, "beard");
+            Scribe_Defs.Look(ref bodyTattoo, "bodyTattoo");
+            Scribe_Defs.Look(ref faceTattoo, "faceTattoo");
             Scribe_Values.Look(ref hairColor, "hairColor", Color.white);
             Scribe_Values.Look(ref skinColorOverride, "skinColorOverride");
             Scribe_Collections.Look(ref traits, "traits", LookMode.Deep);
@@ -344,6 +369,7 @@ namespace VREAndroids
             Scribe_Defs.Look(ref iconDef, "iconDef");
             Scribe_References.Look(ref faction, "faction");
             Scribe_References.Look(ref sourcePawn, "sourcePawn");
+            Scribe_Values.Look(ref biologicalAgeTicks, "biologicalAgeTicks", 0L);
             Scribe_Collections.Look(ref memories, "memories", LookMode.Deep);
             Scribe_Collections.Look(ref relations, "relations", LookMode.Deep);
             Scribe_Values.Look(ref everSeenByPlayer, "everSeenByPlayer");

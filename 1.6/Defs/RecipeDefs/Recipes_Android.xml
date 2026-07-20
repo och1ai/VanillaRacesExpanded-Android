@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- The android printer's "resurrect android" bill. It is intentionally NOT a recipe user of any
+       building, so the printer never becomes a WorkGiver_DoBill target - the printer processes these
+       bills autonomously. The recipe exists so the Bills tab can use the vanilla bill UI. -->
+  <RecipeDef>
+    <defName>VREA_ResurrectAndroid</defName>
+    <label>resurrect android</label>
+    <description>Resurrect a dead android. As long as the body still holds an intact subcore, the assembler reprints its damaged components and reboots the android back to life over one assembly cycle (4 days). A colonist first loads the dead body and 50 steel.</description>
+    <jobString>Resurrecting android.</jobString>
+    <workAmount>240000</workAmount>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Steel</li>
+          </thingDefs>
+        </filter>
+        <count>50</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Steel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+  </RecipeDef>
+
+</Defs>

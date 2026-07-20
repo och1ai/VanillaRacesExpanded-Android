@@ -35,22 +35,14 @@ namespace VREAndroids
             return null;
         }
 
+        // Stands are free-for-all now (no owner): the first usable, reachable, unreserved one wins.
         public static Building_AndroidStand FindStandFor(Pawn pawn)
         {
             foreach (var stand in Building_AndroidStand.stands)
             {
-                if (stand.CompAssignableToPawn.AssignedPawns.Contains(pawn) && stand.CannotUseNowReason(pawn) is null
+                if (stand.CannotUseNowReason(pawn) is null
                     && pawn.CanReserveAndReach(stand, PathEndMode.OnCell, Danger.Deadly))
                 {
-                    return stand;
-                }
-            }
-            foreach (var stand in Building_AndroidStand.stands)
-            {
-                if (stand.CompAssignableToPawn.AssignedPawns.Any() is false && stand.CannotUseNowReason(pawn) is null
-                    && pawn.CanReserveAndReach(stand, PathEndMode.OnCell, Danger.Deadly))
-                {
-                    stand.CompAssignableToPawn.TryAssignPawn(pawn);
                     return stand;
                 }
             }

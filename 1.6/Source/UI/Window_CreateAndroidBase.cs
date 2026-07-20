@@ -115,7 +115,10 @@ namespace VREAndroids
             OnGenesChanged();
         }
 
-        public virtual bool GeneValidator(GeneDef x) => true;
+        // Skin colour, hair colour and body shape are chosen ONLY in the android designer, never as picked
+        // components, so those genes never show up in the androidtype (component) editor.
+        public virtual bool GeneValidator(GeneDef x) =>
+            !Utils.IsSkinColorGene(x) && !Utils.IsHairColorGene(x) && !Utils.IsBodyTypeGene(x);
 
         public override void DoWindowContents(Rect rect)
         {
@@ -247,6 +250,15 @@ namespace VREAndroids
             AcceptInner();
             callback?.Invoke();
             Close();
+        }
+
+        public override void PreOpen()
+        {
+            base.PreOpen();
+            // base.PreOpen resets iconDef to the vanilla blank "Basic" face every time the window opens, so
+            // override it here (after base) to start a new androidtype on the same symbol the stock basic
+            // android xenotype uses (the drone), for consistency with the designer's default.
+            iconDef = VREA_DefOf.VRE_AndroidXenotypeIcon7;
         }
 
         public override void PostOpen()

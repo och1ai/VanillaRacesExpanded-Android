@@ -575,6 +575,10 @@ namespace VREAndroids
         // normal "recoverable death" thought suppression is bypassed for this one moment.
         public static bool forcingAndroidRealDeath;
 
+        // While a throwaway designer-preview android is being built/edited, its gene churn briefly downs
+        // and undowns it; this suppresses the resulting "no longer incapable of walking" style notices.
+        public static bool suppressAndroidNotifications;
+
         // Set true while an android is being downed by running out of power, so the generic
         // "a capacitor array caused X..." combat-log line is swapped for a clearer low-power notice.
         public static bool suppressAndroidDownLog;
@@ -648,7 +652,7 @@ namespace VREAndroids
                 : new ThingDefCount(ThingDefOf.Uranium, 20));
             if (geneList.Contains(VREA_DefOf.VREA_NeutroCirculation))
             {
-                items.Add(new ThingDefCount(VREA_DefOf.Neutroamine, 25));
+                items.Add(new ThingDefCount(VREA_DefOf.Neutroamine, 40));
             }
             else if (geneList.Contains(VREA_DefOf.VREA_NormalBlood))
             {
@@ -821,6 +825,35 @@ namespace VREAndroids
             }
         }
 
+        private static List<GeneDef> cachedAllSkinColorGenes;
+
+        // Every android skin-colour gene the designer can offer - both the melanin (skinColorBase) tones
+        // parsed from germline genes and the override tints (e.g. "blue skin"), sorted light-to-dark.
+        public static List<GeneDef> AllSkinColorAndroidGenes
+        {
+            get
+            {
+                if (cachedAllSkinColorGenes == null)
+                {
+                    cachedAllSkinColorGenes = allAndroidGenes
+                        .Where(g => g.skinColorBase.HasValue || g.skinColorOverride.HasValue)
+                        .OrderBy(g => g.skinColorBase.HasValue ? g.minMelanin : 2f)
+                        .ToList();
+                }
+                return cachedAllSkinColorGenes;
+            }
+        }
+
+        public static UnityEngine.Color SkinColorOf(GeneDef g) => g.skinColorBase ?? g.skinColorOverride ?? UnityEngine.Color.white;
+
+        public static bool IsSkinColorGene(GeneDef g) => g.skinColorBase.HasValue || g.skinColorOverride.HasValue;
+
+        public static bool IsHairColorGene(GeneDef g) => g.hairColorOverride.HasValue;
+
+        // Body shape is picked in the android designer, so body-type genes are hidden from the androidtype
+        // (component) editor. Keyed off the field rather than a category so modded body genes are caught too.
+        public static bool IsBodyTypeGene(GeneDef g) => g.bodyType.HasValue;
+
         private static List<GeneDef> cachedHairColorGenes;
 
         public static List<GeneDef> HairColorAndroidGenes
@@ -909,6 +942,38 @@ namespace VREAndroids
                 return true;
             }
             return VREA_DefOf.VREA_Ideological != null && pawn.HasActiveGene(VREA_DefOf.VREA_Ideological);
+        }
+
+        // Whether a given ideoligion treats this android as a mere tool. True when the ideo holds the
+        // "androids: tools" precept, or one of the awakened-only precepts ("respected (awakened)" /
+        // "equals (awakened)") while the android has not awakened - those grant standing to awakened
+        // androids only and treat everything else as a tool. Tool androids get no opinion / death /
+        // enslavement thoughts and are tinted blue with their androidtype symbol like a slave.
+        public static bool IdeoTreatsAndroidAsTool(Ideo ideo, Pawn android)
+        {
+            if (ideo == null || android == null || !android.IsAndroid())
+            {
+                return false;
+            }
+            if (ideo.HasPrecept(VREA_DefOf.VRE_Androids_Tools))
+            {
+                return true;
+            }
+            if (android.IsAwakened())
+            {
+                return false;
+            }
+            return (VREA_DefOf.VRE_Androids_RespectedOnlyAwakened != null
+                    && ideo.HasPrecept(VREA_DefOf.VRE_Androids_RespectedOnlyAwakened))
+                || (VREA_DefOf.VRE_Androids_EqualOnlyAwakened != null
+                    && ideo.HasPrecept(VREA_DefOf.VRE_Androids_EqualOnlyAwakened));
+        }
+
+        // Convenience: does the colony's primary ideoligion treat this android as a tool? Drives the blue
+        // "slave" name tint and the faction slave count.
+        public static bool IsTreatedAsToolByColony(this Pawn android)
+        {
+            return IdeoTreatsAndroidAsTool(Faction.OfPlayerSilentFail?.ideos?.primaryIdeo, android);
         }
 
         // True for a "machine" android whose Social tab should show only the interaction log - no

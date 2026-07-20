@@ -19,7 +19,7 @@
 			<li>VREA_HeatTolerant</li>
 			<li>VREA_NoSkillGain</li>
 			<li>VREA_Uninspired</li>
-			<li>VREA_PsychicallyDeaf</li>
+			<li>VREA_MutedPsyche</li>
 			<li>VREA_MentalBreaksDisabled</li>
 			<li>VREA_PsychologyDisabled</li>
 		</genes>
@@ -35,7 +35,6 @@
 			<li>VREA_ComponentOverheating</li>
 			<li>VREA_ColdTolerant</li>
 			<li>VREA_HeatTolerant</li>
-			<li>VREA_PsychicallyDeaf</li>
 		</genes>
 	</XenotypeDef>
 	

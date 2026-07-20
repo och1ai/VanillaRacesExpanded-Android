@@ -12,7 +12,7 @@ namespace VREAndroids
         [HarmonyPriority(int.MaxValue)]
         public static bool Prefix(Pawn warden, Pawn prisoner)
         {
-            if ( (warden.Ideo?.HasPrecept(VREA_DefOf.VRE_Androids_Tools) == true && prisoner.IsAndroid()))
+            if (Utils.IdeoTreatsAndroidAsTool(warden.Ideo, prisoner))
             {
                 if (!prisoner.IsSlave)
                 {

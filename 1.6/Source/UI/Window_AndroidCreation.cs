@@ -19,13 +19,17 @@ namespace VREAndroids
             this.creator = creator;
         }
 
-        public override string Header => "VREA.CreateAndroid".Translate();
-        public override string AcceptButtonLabel => "VREA.CreateAndroid".Translate();
+        public override string Header => "VREA.CreateAndroidType".Translate();
+        public override string AcceptButtonLabel => "VREA.Confirm".Translate();
 
         // Blood type, power source and chassis can be chosen freely while building the body.
         protected override bool CanSwapBlood => true;
         protected override bool CanSwapPower => true;
         protected override bool CanSwapChassis => true;
+        // Set by the designer: the component window is now a "pick the android type" sub-step that
+        // returns its gene selection, rather than starting the print itself.
+        public Action<CustomXenotype> onTypeResult;
+
         protected override void AcceptInner()
         {
             CustomXenotype customXenotype = new CustomXenotype();
@@ -33,20 +37,7 @@ namespace VREAndroids
             customXenotype.genes.AddRange(selectedGenes);
             customXenotype.inheritable = false;
             customXenotype.iconDef = iconDef;
-            station.curAndroidProject = customXenotype;
-            // The printer gestates on a fixed single cycle now, no longer scaling with gene complexity.
-            station.totalWorkAmount = Building_AndroidCreationStation.GestationTicks;
-            station.currentWorkAmountDone = 0;
-            station.requiredItems = requiredItems;
-            if (creator != null)
-            {
-                var workgiver = new WorkGiver_CreateAndroid();
-                var job = workgiver.JobOnThing(creator, station);
-                if (job != null)
-                {
-                    creator.jobs.TryTakeOrderedJob(job);
-                }
-            }
+            onTypeResult?.Invoke(customXenotype);
         }
 
 
@@ -103,10 +94,10 @@ namespace VREAndroids
                 requiredItems.Add(new ThingDefCount(ThingDefOf.Uranium, 20));
             }
             // The chosen blood fills the android's reservoir up front, so it spawns full: neutroamine
-            // blood needs 25 neutroamine, hemogenic blood 4 hemogen packs, bloodless needs none.
+            // blood needs 40 neutroamine, hemogenic blood 4 hemogen packs, bloodless needs none.
             if (SelectedGenes.Contains(VREA_DefOf.VREA_NeutroCirculation))
             {
-                requiredItems.Add(new ThingDefCount(VREA_DefOf.Neutroamine, 25));
+                requiredItems.Add(new ThingDefCount(VREA_DefOf.Neutroamine, 40));
             }
             else if (SelectedGenes.Contains(VREA_DefOf.VREA_NormalBlood))
             {

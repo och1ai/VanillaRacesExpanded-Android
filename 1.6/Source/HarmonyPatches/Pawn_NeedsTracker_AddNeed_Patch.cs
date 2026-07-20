@@ -12,6 +12,11 @@ namespace VREAndroids
         {
             if (___pawn.IsAndroid())
             {
+                // Let the sleep-cycle subroutine add the Rest need even though Rest is normally excluded.
+                if (nd == NeedDefOf.Rest && ___pawn.HasActiveGene(VREA_DefOf.VREA_SleepNeed))
+                {
+                    return true;
+                }
                 if (VREA_DefOf.VREA_AndroidSettings.excludedNeedsForAndroids.Contains(nd.defName))
                 {
                     return false;

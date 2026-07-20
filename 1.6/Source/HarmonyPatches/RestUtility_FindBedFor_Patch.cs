@@ -44,12 +44,11 @@ namespace VREAndroids
             }
         }
 
-        // The android stand this sleeper should be taken to: its own assigned stand if it has one, else
-        // any free stand the carrier can actually reach and reserve.
+        // The android stand this sleeper should be taken to: stands are unowned free-for-all chargers,
+        // so any stand the carrier can actually reach and reserve will do.
         private static Building_AndroidStand FindStandFor(Pawn sleeper, Pawn traveler)
         {
             Pawn reacher = traveler ?? sleeper;
-            Building_AndroidStand free = null;
             foreach (var stand in Building_AndroidStand.stands)
             {
                 if (stand.Map == null || stand.Map != sleeper.MapHeld || stand.Faction != Faction.OfPlayer)
@@ -60,16 +59,9 @@ namespace VREAndroids
                 {
                     continue;
                 }
-                if (stand.CompAssignableToPawn.AssignedPawns.Contains(sleeper))
-                {
-                    return stand;
-                }
-                if (free == null && stand.CompAssignableToPawn.AssignedPawns.Any() is false)
-                {
-                    free = stand;
-                }
+                return stand;
             }
-            return free;
+            return null;
         }
     }
 }

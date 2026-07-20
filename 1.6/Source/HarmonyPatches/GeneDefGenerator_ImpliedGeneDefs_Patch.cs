@@ -91,7 +91,10 @@ namespace VREAndroids
                         def.modExtensions??= new List<DefModExtension>();
                         def.modExtensions.Add(new GeneExtension
                         {
-                            backgroundPathXenogenes = "UI/Icons/Genes/GeneBackground_Subroutine"
+                            // Set both backgrounds: these skill/aptitude genes can sit as endogenes on a
+                            // pawn, and without the endogene path they fell back to the germline frame.
+                            backgroundPathXenogenes = "UI/Icons/Genes/GeneBackground_Subroutine",
+                            backgroundPathEndogenes = "UI/Icons/Genes/GeneBackground_Subroutine"
                         });
                         AddAndroidGene(def);
                         yield return def;

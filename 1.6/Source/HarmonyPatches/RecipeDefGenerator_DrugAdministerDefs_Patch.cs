@@ -27,7 +27,10 @@ namespace VREAndroids
             recipeDef.modContentPack = item.modContentPack;
             recipeDef.workAmount = 120;
             IngredientCount ingredientCount = new IngredientCount();
-            ingredientCount.SetBaseCount(100f);
+            // A full reservoir, so the listed cost matches what a complete top-up actually consumes. The
+            // worker's GetIngredientCount then scales this down to the android's real neutro loss, so a
+            // half-empty android only ever gets charged for half.
+            ingredientCount.SetBaseCount(Recipe_AdministerNeutroamineForAndroid.NeutroaminePerFullReservoir);
             ingredientCount.filter.SetAllow(item, allow: true);
             recipeDef.ingredients.Add(ingredientCount);
             recipeDef.fixedIngredientFilter.SetAllow(item, allow: true);

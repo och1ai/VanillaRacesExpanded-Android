@@ -137,10 +137,6 @@ namespace VREAndroids
                 {
                     yield return new FloatMenuOption("VREA.FreeMemorySpace".Translate(), delegate
                     {
-                        if (CompAssignableToPawn.AssignedPawns.Contains(selPawn) is false)
-                        {
-                            CompAssignableToPawn.TryAssignPawn(selPawn);
-                        }
                         selPawn.jobs.TryTakeOrderedJob(JobMaker.MakeJob(VREA_DefOf.VREA_FreeMemorySpace, this));
                     });
                 }
@@ -167,10 +163,6 @@ namespace VREAndroids
                     {
                         yield return new FloatMenuOption("VREA.Recharge".Translate(), delegate
                         {
-                            if (CompAssignableToPawn.AssignedPawns.Contains(selPawn) is false)
-                            {
-                                CompAssignableToPawn.TryAssignPawn(selPawn);
-                            }
                             selPawn.jobs.TryTakeOrderedJob(JobMaker.MakeJob(VREA_DefOf.VREA_ChargeAndroid, this));
                         });
                     }

@@ -201,7 +201,7 @@
 		<iconPath>UI/Icons/Genes/Hardware/Gene_NeutroCirculation</iconPath>
 		<displayOrderInCategory>11</displayOrderInCategory>
 		<biostatCpx>2</biostatCpx>
-		<biostatMet>7</biostatMet>
+		<biostatMet>12</biostatMet>
 		<displayCategory>VREA_Hardware</displayCategory>
 		<canGenerateInGeneSet>false</canGenerateInGeneSet>
 		<isCoreComponent>true</isCoreComponent>
@@ -237,7 +237,7 @@
 		<iconPath>UI/Icons/Genes/Hardware/Gene_HemogenicBlood</iconPath>
 		<displayOrderInCategory>11</displayOrderInCategory>
 		<biostatCpx>1</biostatCpx>
-		<biostatMet>3</biostatMet>
+		<biostatMet>6</biostatMet>
 		<exclusionTags>
 			<li>AndroidBlood</li>
 		</exclusionTags>
@@ -388,16 +388,20 @@
 		<removeWhenAwakened>true</removeWhenAwakened>
 	</VREAndroids.AndroidGeneDef>
 
+	<!-- The default psychic profile of a non-awakened android: the same faint presence an ordinary
+	     mechanoid has (0.5). Stripped on awakening, which restores full 1.0 sensitivity and is also what
+	     lets an awakened android carry a psylink (see Hediff_Psylink_ChangeLevel_Patch). -->
 	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
-		<defName>VREA_PsychicallyDeaf</defName>
-		<label>psychically deaf</label>
-		<description>Androids with this hardware are deaf to all psychic energy and influence outside their own minds. They cannot be affected by psychic influence, nor can they ever wield psychic power.</description>
+		<defName>VREA_MutedPsyche</defName>
+		<label>psychically dull</label>
+		<description>Androids with this hardware register psychic energy only faintly, with the same dim presence as an ordinary mechanoid. Psychic influence still reaches them, but weakly, and they can never wield psychic power of their own.\n\nIt is said that some awakened androids shed this dullness entirely, growing as sensitive as any organic mind.</description>
 		<iconPath>UI/Icons/Genes/Hardware/Gene_PsychicallyDeaf</iconPath>
 		<displayOrderInCategory>19</displayOrderInCategory>
 		<statFactors>
-			<PsychicSensitivity>0</PsychicSensitivity>
+			<PsychicSensitivity>0.5</PsychicSensitivity>
 		</statFactors>
-		<biostatCpx>1</biostatCpx>
+		<biostatCpx>0</biostatCpx>
+		<removeWhenAwakened>true</removeWhenAwakened>
 	</VREAndroids.AndroidGeneDef>
 
 	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
@@ -482,6 +486,7 @@
 			<li>Violent</li>
 		</disabledWorkTags>
 		<exclusionTags>
+			<li>AndroidCombat</li>
 			<li>MeleeDamage</li>
 			<li>ShootingAccuracy</li>
 			<li>Aggressive</li>
@@ -809,15 +814,17 @@
 
 	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
 		<defName>VREA_ToughSubroutine</defName>
-		<label>reinforced chassis</label>
-		<description>This android is built on a heavy reinforced frame: thick structural plating and hardened servos soak up punishment, so it takes significantly less damage from all incoming attacks. The extra mass draws more power to move.</description>
-		<iconPath>UI/Icons/Genes/Gene_Tough</iconPath>
+		<label>War Frame</label>
+		<description>A full military chassis: thick structural plating and hardened servos both soak up punishment and shrug off the shock of incoming hits. The android takes significantly less damage from all attacks and is never staggered or slowed when hit. All that armour draws a lot more power to move.</description>
+		<iconPath>UI/Icons/Genes/Gene_Deathless</iconPath>
 		<displayOrderInCategory>40</displayOrderInCategory>
-		<biostatCpx>2</biostatCpx>
+		<biostatCpx>3</biostatCpx>
 		<biostatMet>-6</biostatMet>
 		<isCoreComponent>false</isCoreComponent>
 		<statFactors>
 			<IncomingDamageFactor>0.7</IncomingDamageFactor>
+			<!-- Folds in the unstoppable effect: never staggered by hits. -->
+			<StaggerDurationFactor>0</StaggerDurationFactor>
 		</statFactors>
 		<exclusionTags>
 			<li>AndroidChassis</li>
@@ -826,20 +833,28 @@
 
 	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
 		<defName>VREA_StrongMelee</defName>
-		<label>combat actuators</label>
-		<description>Androids with this subroutine drive their limbs with reinforced high-torque actuators, dealing significantly more damage in melee.</description>
-		<iconPath>UI/Icons/Genes/Gene_StrongMeleeDamage</iconPath>
+		<label>enhanced targeting</label>
+		<description>A full combat package: reinforced high-torque actuators drive the limbs while a dedicated targeting suite runs the optics. The android deals significantly more damage in melee, shoots far more accurately, and cycles ranged weapons noticeably faster.</description>
+		<iconPath>UI/Commands/Attack</iconPath>
 		<displayOrderInCategory>27</displayOrderInCategory>
-		<biostatCpx>1</biostatCpx>
-		<biostatMet>-4</biostatMet>
+		<biostatCpx>2</biostatCpx>
+		<biostatMet>-6</biostatMet>
 		<statFactors>
 			<MeleeDamageFactor>1.5</MeleeDamageFactor>
+			<ShootingAccuracyPawn>1.5</ShootingAccuracyPawn>
+			<!-- Pawn-side cooldown multipliers. (RangedWeapon_Cooldown is a *weapon* stat, so a gene
+			     factor on it would have done nothing.) -->
+			<RangedCooldownFactor>0.8</RangedCooldownFactor>
+			<MeleeCooldownFactor>0.8</MeleeCooldownFactor>
 		</statFactors>
+		<exclusionTags>
+			<li>AndroidCombat</li>
+		</exclusionTags>
 	</VREAndroids.AndroidGeneDef>
 
-	<!-- Android-frame equivalents of Biotech's delicate / unstoppable genes, reusing the DLC icons.
-	     Delicate is the fragile counterpart of the reinforced chassis (mutually exclusive with it);
-	     unstoppable keeps the android from being staggered by hits. -->
+	<!-- Android-frame equivalent of Biotech's delicate gene, reusing the DLC icon: the fragile
+	     counterpart of the War Frame chassis (mutually exclusive with it). The old standalone
+	     "unstoppable" gene was removed - the War Frame now folds in its no-stagger effect. -->
 	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
 		<defName>VREA_Delicate</defName>
 		<label>delicate frame</label>
@@ -855,20 +870,6 @@
 		<exclusionTags>
 			<li>AndroidChassis</li>
 		</exclusionTags>
-	</VREAndroids.AndroidGeneDef>
-
-	<VREAndroids.AndroidGeneDef ParentName="VREA_HardwareBase">
-		<defName>VREA_Unstoppable</defName>
-		<label>unstoppable</label>
-		<description>This android's servos shrug off the shock of incoming hits, so it is never staggered or slowed down when taking damage.</description>
-		<iconPath>UI/Icons/Genes/Gene_Unstoppable</iconPath>
-		<displayOrderInCategory>30</displayOrderInCategory>
-		<biostatCpx>1</biostatCpx>
-		<biostatMet>-3</biostatMet>
-		<isCoreComponent>false</isCoreComponent>
-		<statFactors>
-			<StaggerDurationFactor>0</StaggerDurationFactor>
-		</statFactors>
 	</VREAndroids.AndroidGeneDef>
 
 	<!-- Ideology-only subroutine: gives the android a real ideoligion (assigned at random for now)
@@ -898,6 +899,107 @@
 		<biostatMet>10</biostatMet>
 		<isCoreComponent>false</isCoreComponent>
 		<enablesNeeds><li>VREA_MemorySpace</li></enablesNeeds>
+	</VREAndroids.AndroidGeneDef>
+
+	<!-- ============ Phase 7b subroutines ============ -->
+
+	<!-- Sleep cycle: gives the android a real Rest need (it must sleep/rest like an organic). The Rest
+	     need is normally stripped from androids; this subroutine re-enables it (see the ShouldHaveNeed
+	     patch). Frugal to run, so it gives back metabolic efficiency. -->
+	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
+		<defName>VREA_SleepNeed</defName>
+		<label>sleep cycle</label>
+		<description>This android runs a full biomimetic sleep cycle: it builds up fatigue and has to rest or sleep like an organic to keep operating. Idling through a sleep cycle draws very little power, so the frame runs more efficiently.</description>
+		<iconPath>UI/Icons/Genes/Subroutines/Gene_SleepMode</iconPath>
+		<displayOrderInCategory>50</displayOrderInCategory>
+		<biostatCpx>1</biostatCpx>
+		<biostatMet>10</biostatMet>
+	</VREAndroids.AndroidGeneDef>
+
+	<!-- Occultist protocols (Anomaly): the ONLY way an android may take part in psychic rituals (incl.
+	     being the subject of an infused death refusal) and the only way it may capture, contain and study
+	     entities. The study half also needs the android to not be incapable of Intellectual. -->
+	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase" MayRequire="Ludeon.RimWorld.Anomaly">
+		<defName>VREA_Occultist</defName>
+		<label>occultist</label>
+		<description>Forbidden subroutines let this android interface with the dark and the anomalous. It is the only android that can take part in psychic rituals - including being the subject of an infused death refusal - and the only one able to capture, contain and study entities. Studying still requires that the android is not incapable of Intellectual.</description>
+		<iconPath>UI/PsychicRituals/PsychicRitual_VoidProvocation</iconPath>
+		<displayOrderInCategory>51</displayOrderInCategory>
+		<biostatCpx>2</biostatCpx>
+		<biostatMet>-4</biostatMet>
+	</VREAndroids.AndroidGeneDef>
+
+	<!-- Gravpilot protocols (Odyssey): dedicated astrogation/flight-control routines wired straight into
+	     the frame - a built-in equivalent of the pilot-assistant implant, granting the same piloting-ability
+	     bonus. -->
+	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase" MayRequire="Ludeon.RimWorld.Odyssey">
+		<defName>VREA_Gravpilot</defName>
+		<label>gravpilot</label>
+		<description>Dedicated astrogation and flight-control routines are wired straight into this android's frame - the built-in equivalent of a pilot-assistant implant. They make it a markedly better gravship and shuttle pilot.</description>
+		<iconPath>UI/Commands/LaunchGravship</iconPath>
+		<displayOrderInCategory>52</displayOrderInCategory>
+		<biostatCpx>2</biostatCpx>
+		<biostatMet>-4</biostatMet>
+		<statOffsets MayRequire="Ludeon.RimWorld.Odyssey">
+			<PilotingAbility>0.45</PilotingAbility>
+		</statOffsets>
+	</VREAndroids.AndroidGeneDef>
+
+	<!-- Combat inefficiency: budget targeting and actuators - weak melee and a poor shot. Cutting these
+	     corners frees up a lot of power. -->
+	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
+		<defName>VREA_CombatInefficiency</defName>
+		<label>dull combat</label>
+		<description>Cut-rate targeting optics and underpowered actuators: this android hits weakly in melee and shoots poorly. Skimping on combat hardware leaves a lot more power for everything else.</description>
+		<iconPath>UI/Icons/Genes/Gene_WeakMeleeDamage</iconPath>
+		<displayOrderInCategory>53</displayOrderInCategory>
+		<biostatCpx>1</biostatCpx>
+		<biostatMet>6</biostatMet>
+		<statFactors>
+			<MeleeDamageFactor>0.5</MeleeDamageFactor>
+		</statFactors>
+		<statOffsets>
+			<ShootingAccuracyPawn>-3</ShootingAccuracyPawn>
+		</statOffsets>
+		<!-- Mutually exclusive with the other combat packages (enhanced targeting / combat incapability). -->
+		<exclusionTags>
+			<li>AndroidCombat</li>
+		</exclusionTags>
+	</VREAndroids.AndroidGeneDef>
+
+	<!-- Emergency power reserve: a hardened backup capacitor keeps the android running for 2 hours after a
+	     critical failure anywhere but the head, then it deactivates. A destroyed head still shuts it down
+	     at once. Driven by Gene_DelayedDeactivation + the ShouldBeDowned patch. -->
+	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase">
+		<defName>VREA_DelayedDeactivation</defName>
+		<label>death delay</label>
+		<description>A hardened backup capacitor keeps this android fighting through catastrophic damage. When a critical failure that would normally drop it happens anywhere but the head, it stays operational for 2 hours on reserve power before finally shutting down. Destroying the head still shuts it down instantly.</description>
+		<geneClass>VREAndroids.Gene_DelayedDeactivation</geneClass>
+		<iconPath>UI/Icons/Genes/Gene_Ageless</iconPath>
+		<displayOrderInCategory>54</displayOrderInCategory>
+		<biostatCpx>2</biostatCpx>
+		<biostatMet>-4</biostatMet>
+	</VREAndroids.AndroidGeneDef>
+
+	<!-- Mechanitor oversight (Biotech): a band-node antenna wired into the subcore lets a mechanitor claim
+	     this android as if it were one of their mechs - connect/disconnect like a mech, 5 bandwidth cost,
+	     assignable to a control group with a work mode, commandable within command range. Behaviour is
+	     driven by the IsColonyMech patch + a dynamically-added CompOverseerSubject. -->
+	<VREAndroids.AndroidGeneDef ParentName="VREA_SubroutineBase" MayRequire="Ludeon.RimWorld.Biotech">
+		<defName>VREA_MechOversight</defName>
+		<label>mechlike</label>
+		<description>This android runs the same standard subroutine ordinary mechanoids do, delegating part of its decision-making to a supervising mechanitor. A mechanitor can connect and disconnect it like any of their mechs: it costs 5 bandwidth, can be assigned to a control group with a work mode, and obeys within command range.\n\nWith so much of its processing handed off, the android has no operator of its own until a mechanitor takes oversight - until then it stands dormant, powered down and unable to act.</description>
+		<geneClass>VREAndroids.Gene_MechOversight</geneClass>
+		<iconPath>UI/Gizmos/BandNodeTuning</iconPath>
+		<!-- An awakened mind can't be run as a remote-controlled machine: the protocol is purged on
+		     awakening (Gene_MechOversight.PostRemove cuts the overseer link). -->
+		<removeWhenAwakened>true</removeWhenAwakened>
+		<displayOrderInCategory>55</displayOrderInCategory>
+		<biostatCpx>2</biostatCpx>
+		<biostatMet>7</biostatMet>
+		<statOffsets MayRequire="Ludeon.RimWorld.Biotech">
+			<BandwidthCost>5</BandwidthCost>
+		</statOffsets>
 	</VREAndroids.AndroidGeneDef>
 
 	<VREAndroids.AndroidGeneTemplateDef Name="VREA_GeneAptitudeBase" Abstract="True">

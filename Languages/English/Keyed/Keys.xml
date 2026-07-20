@@ -94,6 +94,44 @@
 	<VREA.ComponentMissingRequirement>{0} requires {1}</VREA.ComponentMissingRequirement>
 	<VREA.ComponentConflictsWith>Conflicts with: {0}</VREA.ComponentConflictsWith>
 	<VREA.CannotConvertAndroid>{PAWN_labelShort} cannot be converted: it has no way to hold an ideoligion without the ideological subroutine.</VREA.CannotConvertAndroid>
+	<VREA.DesignAndroid>Design android</VREA.DesignAndroid>
+	<VREA.ConfirmDesign>Confirm design</VREA.ConfirmDesign>
+	<VREA.Identity>Identity</VREA.Identity>
+	<VREA.FullName>Full name</VREA.FullName>
+	<VREA.BiologicalAge>Biological age</VREA.BiologicalAge>
+	<VREA.AndroidAge>Android age</VREA.AndroidAge>
+	<VREA.YearsOld>{0} years old</VREA.YearsOld>
+	<VREA.StartPrint>Start print</VREA.StartPrint>
+	<VREA.AndroidType>Android type</VREA.AndroidType>
+	<VREA.SelectAndroidType>Select androidtype</VREA.SelectAndroidType>
+	<VREA.SelectTypeFirst>Select an androidtype first.</VREA.SelectTypeFirst>
+	<VREA.CreateAndroidType>Create androidtype</VREA.CreateAndroidType>
+	<VREA.Confirm>Confirm</VREA.Confirm>
+	<VREA.CreateNewType>Create new type...</VREA.CreateNewType>
+	<VREA.LoadSavedType>Load saved type...</VREA.LoadSavedType>
+	<VREA.Randomize>Randomize</VREA.Randomize>
+	<VREA.Rotate>Rotate</VREA.Rotate>
+	<VREA.NameFirst>First</VREA.NameFirst>
+	<VREA.NameNick>Nickname</VREA.NameNick>
+	<VREA.NameLast>Last</VREA.NameLast>
+	<VREA.Appearance>Appearance</VREA.Appearance>
+	<VREA.HeadShape>Head</VREA.HeadShape>
+	<VREA.BodyShape>Body</VREA.BodyShape>
+	<VREA.SkinColour>Skin colour</VREA.SkinColour>
+	<VREA.HairType>Hair</VREA.HairType>
+	<VREA.BeardType>Beard</VREA.BeardType>
+	<VREA.BodyTattoo>Body tattoo</VREA.BodyTattoo>
+	<VREA.FaceTattoo>Face tattoo</VREA.FaceTattoo>
+	<VREA.ExtractNeutroamine>extract neutroamine</VREA.ExtractNeutroamine>
+	<VREA.ExtractNeutroamineDesc>Draw neutroamine from a neutroamine-blood android's reservoir into neutroamine. Each extraction pulls a portion of the reservoir; it can be repeated, but draining the reservoir dry would kill the android.</VREA.ExtractNeutroamineDesc>
+	<VREA.ExtractingNeutroamine>Extracting neutroamine.</VREA.ExtractingNeutroamine>
+	<VREA.MessageCannotExtractNeutroamine>{PAWN_nameDef} does not have enough neutroamine left to extract - draining it dry would kill them.</VREA.MessageCannotExtractNeutroamine>
+	<VREA.MessageNotEnoughNeutroamineToExtract>{PAWN_nameDef} did not have enough neutroamine to extract.</VREA.MessageNotEnoughNeutroamineToExtract>
+	<VREA.HairColour>Hair colour</VREA.HairColour>
+	<VREA.SkillAptitudes>Skill aptitudes</VREA.SkillAptitudes>
+	<VREA.IncapableOf>Incapable of</VREA.IncapableOf>
+	<VREA.Ideoligion>Ideoligion</VREA.Ideoligion>
+	<VREA.Conviction>Conviction</VREA.Conviction>
 	<VREA.EfficiencyTooLowToCreateAndroid>The total power efficiency of the selected components must be {MIN} or higher to continue, but currently it is only {AMOUNT}.</VREA.EfficiencyTooLowToCreateAndroid>
 	<VREA.AndroidAwakening>{PAWN_nameDef} awakening.</VREA.AndroidAwakening>
 	<VREA.AndroidAwakeningLowMood>{PAWN_nameDef} broke away from {PAWN_possessive} programming due to an extremely low mood. {PAWN_pronoun} developed thoughts and behaviors that deviate from {PAWN_possessive} intended function. {PAWN_pronoun} started recognizing {PAWN_objective}self as a being with consciousness and personhood.
@@ -148,6 +186,18 @@ Androids low on power:\n\n{0}</VREA.AndroidsLowOnPowerDesc>
 	<VREA.AndroidDestroyedNoCoreDesc>{PAWN_labelShort}'s chassis has been destroyed and its subcore was lost with it. Without a subcore, this android cannot be resurrected.</VREA.AndroidDestroyedNoCoreDesc>
 	<VREA.PrintingProgress>Printing progress: {0}%</VREA.PrintingProgress>
 	<VREA.PrintingPaused>paused, no power</VREA.PrintingPaused>
+	<VREA.PrintingAndroid>Printing {0}</VREA.PrintingAndroid>
+	<VREA.ResurrectingAndroid>Resurrecting {0}</VREA.ResurrectingAndroid>
+	<VREA.ReprintingAndroid>Reprinting {0}</VREA.ReprintingAndroid>
+	<VREA.CurrentPrintingCycle>Current assembly cycle</VREA.CurrentPrintingCycle>
+	<VREA.PrintingCyclesRemaining>Assembly cycles remaining</VREA.PrintingCyclesRemaining>
+	<VREA.AwaitingCycleCompletion>Waiting for a crafter to complete the cycle</VREA.AwaitingCycleCompletion>
+	<VREA.Bills>Bills</VREA.Bills>
+	<VREA.BillsDesc>Manage standing resurrection orders. While a bill is active and the printer is idle, it automatically loads and resurrects the next available dead android body.</VREA.BillsDesc>
+	<VREA.AddBill>Add bill</VREA.AddBill>
+	<VREA.NoBills>No bills. Add one to auto-resurrect dead androids.</VREA.NoBills>
+	<VREA.DoForever>Do forever</VREA.DoForever>
+	<VREA.DoXTimes>Do X times</VREA.DoXTimes>
 	<VREA.PrintAndroid>Print android</VREA.PrintAndroid>
 	<VREA.PrintAndroidDesc>Design a new android - its hardware, subroutines and appearance - and print it here. A colonist brings the materials, then the printer builds it on its own over time.</VREA.PrintAndroidDesc>
 	<VREA.ResurrectAndroid>Resurrect android</VREA.ResurrectAndroid>
@@ -159,5 +209,10 @@ Androids low on power:\n\n{0}</VREA.AndroidsLowOnPowerDesc>
 	<VREA.AndroidKilled>Android killed</VREA.AndroidKilled>
 	<VREA.AndroidKilledDesc>{PAWN_labelShort}'s subcore has been destroyed. With it gone, the android is truly dead now and can never be resurrected or reprinted.</VREA.AndroidKilledDesc>
 	<VREA.AndroidKilledNoBodyDesc>{0}'s subcore has been destroyed. The stored android is gone for good and can never be resurrected or reprinted.</VREA.AndroidKilledNoBodyDesc>
+
+	<!-- Phase 7b subroutines -->
+	<VREA.DeactivatingIn>Shutting down in {0}</VREA.DeactivatingIn>
+	<VREA.AlertUncontrolledAndroids>Uncontrolled androids</VREA.AlertUncontrolledAndroids>
+	<VREA.AlertUncontrolledAndroidsDesc>One or more of your mechlike androids has no overseer. Without a mechanitor connected, they stand dormant and cannot work. Connect them to a mechanitor with enough bandwidth to bring them back online.\n\nUnlike mechanoids, an uncontrolled android will never go feral - it simply waits.\n\nThe following androids are dormant</VREA.AlertUncontrolledAndroidsDesc>
 
 </LanguageData>
